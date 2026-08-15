@@ -1,0 +1,1 @@
+<div class="text-center py-5"><h1>500</h1><p class="text-muted">Something went wrong. The error has been logged.</p><a class="btn btn-primary" href="<?=url('dashboard')?>">Back to dashboard</a></div>

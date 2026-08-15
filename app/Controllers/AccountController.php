@@ -1,0 +1,4 @@
+<?php
+declare(strict_types=1);
+namespace App\Controllers; use App\Core\Request;use App\Core\View;use App\Core\Response;use App\Core\Session;use App\Middleware\PermissionMiddleware;use App\Repositories\AccountRepository;
+final class AccountController { public function index(Request $r):void{PermissionMiddleware::require('accounts.view');$rows=(new AccountRepository())->all();View::render('accounts/index',compact('rows'));} public function store(Request $r):void{PermissionMiddleware::require('accounts.create');verify_csrf();(new AccountRepository())->create($r->all());Session::flash('success','Account created.');Response::redirect('/accounts');} public function update(Request $r,string $id):void{PermissionMiddleware::require('accounts.edit');verify_csrf();(new AccountRepository())->update((int)$id,$r->all());Session::flash('success','Account updated.');Response::redirect('/accounts');}}
