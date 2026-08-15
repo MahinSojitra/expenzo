@@ -1,13 +1,162 @@
-CREATE DATABASE IF NOT EXISTS expense_tracker CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE expense_tracker;
-CREATE TABLE users (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(120) NOT NULL,email VARCHAR(190) NOT NULL UNIQUE,password_hash VARCHAR(255) NOT NULL,status ENUM('active','inactive') NOT NULL DEFAULT 'active',created_at DATETIME NOT NULL,updated_at DATETIME NOT NULL) ENGINE=InnoDB;
-CREATE TABLE roles (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(80) NOT NULL UNIQUE);
-CREATE TABLE permissions (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(120) NOT NULL UNIQUE);
-CREATE TABLE user_roles (user_id BIGINT UNSIGNED NOT NULL,role_id INT UNSIGNED NOT NULL,PRIMARY KEY(user_id,role_id),FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE);
-CREATE TABLE role_permissions (role_id INT UNSIGNED NOT NULL,permission_id INT UNSIGNED NOT NULL,PRIMARY KEY(role_id,permission_id),FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE,FOREIGN KEY(permission_id) REFERENCES permissions(id) ON DELETE CASCADE);
-CREATE TABLE categories (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(120) NOT NULL UNIQUE,description TEXT NULL,icon VARCHAR(80) NOT NULL DEFAULT 'tag',color VARCHAR(20) NOT NULL DEFAULT '#3b7ddd',status ENUM('active','inactive') NOT NULL DEFAULT 'active',created_at DATETIME NOT NULL,updated_at DATETIME NOT NULL);
-CREATE TABLE accounts (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(120) NOT NULL UNIQUE,type VARCHAR(60) NOT NULL,opening_balance DECIMAL(15,2) NOT NULL DEFAULT 0,current_balance DECIMAL(15,2) NOT NULL DEFAULT 0,description TEXT NULL,status ENUM('active','inactive') NOT NULL DEFAULT 'active',created_at DATETIME NOT NULL,updated_at DATETIME NOT NULL);
-CREATE TABLE expenses (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,user_id BIGINT UNSIGNED NOT NULL,amount DECIMAL(15,2) NOT NULL,expense_date DATE NOT NULL,category_id BIGINT UNSIGNED NOT NULL,account_id BIGINT UNSIGNED NOT NULL,description VARCHAR(255) NOT NULL,notes TEXT NULL,receipt_path VARCHAR(255) NULL,status ENUM('draft','posted','void') NOT NULL DEFAULT 'posted',created_at DATETIME NOT NULL,updated_at DATETIME NOT NULL,INDEX idx_expenses_user_date(user_id,expense_date),INDEX idx_expenses_category(category_id),INDEX idx_expenses_account(account_id),FOREIGN KEY(user_id) REFERENCES users(id),FOREIGN KEY(category_id) REFERENCES categories(id),FOREIGN KEY(account_id) REFERENCES accounts(id));
-CREATE TABLE budgets (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,user_id BIGINT UNSIGNED NOT NULL,category_id BIGINT UNSIGNED NULL,start_date DATE NOT NULL,end_date DATE NOT NULL,budget_amount DECIMAL(15,2) NOT NULL,warning_thresholds VARCHAR(100) NOT NULL,status ENUM('active','inactive') NOT NULL DEFAULT 'active',created_at DATETIME NOT NULL,updated_at DATETIME NOT NULL,INDEX idx_budgets_period(start_date,end_date),FOREIGN KEY(user_id) REFERENCES users(id),FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE SET NULL);
-CREATE TABLE settings (setting_key VARCHAR(120) PRIMARY KEY,setting_value TEXT NULL,updated_at DATETIME NOT NULL);
-CREATE TABLE audit_logs (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,user_id BIGINT UNSIGNED NULL,action VARCHAR(80) NOT NULL,entity VARCHAR(80) NOT NULL,entity_id BIGINT UNSIGNED NULL,old_values JSON NULL,new_values JSON NULL,ip_address VARCHAR(45) NULL,user_agent VARCHAR(255) NULL,created_at DATETIME NOT NULL,INDEX idx_audit_entity(entity,entity_id),INDEX idx_audit_created(created_at),FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL);
+﻿CREATE DATABASE IF NOT EXISTS expenzo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE expenzo;
+
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS audit_logs;
+DROP TABLE IF EXISTS settings;
+DROP TABLE IF EXISTS budgets;
+DROP TABLE IF EXISTS expenses;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS user_category_settings;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS role_permissions;
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS permissions;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS users;
+SET FOREIGN_KEY_CHECKS=1;
+
+CREATE TABLE users (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_users_status(status)
+) ENGINE=InnoDB;
+
+CREATE TABLE roles (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL UNIQUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE permissions (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL UNIQUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE user_roles (
+  user_id BIGINT UNSIGNED NOT NULL,
+  role_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY(user_id, role_id),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE role_permissions (
+  role_id INT UNSIGNED NOT NULL,
+  permission_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY(role_id, permission_id),
+  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE,
+  FOREIGN KEY(permission_id) REFERENCES permissions(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE categories (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  description TEXT NULL,
+  icon VARCHAR(80) NOT NULL DEFAULT 'tag',
+  color VARCHAR(20) NOT NULL DEFAULT '#3b7ddd',
+  status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+  created_by BIGINT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_categories_name(name),
+  INDEX idx_categories_status(status),
+  FOREIGN KEY(created_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE user_category_settings (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  category_id BIGINT UNSIGNED NOT NULL,
+  badge VARCHAR(16) NULL,
+  icon VARCHAR(80) NULL,
+  color VARCHAR(20) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_user_category(user_id, category_id),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE accounts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  name VARCHAR(120) NOT NULL,
+  type VARCHAR(60) NOT NULL,
+  opening_balance DECIMAL(15,2) NOT NULL DEFAULT 0,
+  current_balance DECIMAL(15,2) NOT NULL DEFAULT 0,
+  description TEXT NULL,
+  status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_accounts_user_name(user_id, name),
+  INDEX idx_accounts_user_status(user_id, status),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE expenses (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  amount DECIMAL(15,2) NOT NULL,
+  expense_date DATE NOT NULL,
+  category_id BIGINT UNSIGNED NOT NULL,
+  account_id BIGINT UNSIGNED NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  notes TEXT NULL,
+  receipt_path VARCHAR(255) NULL,
+  status ENUM('draft','posted','void') NOT NULL DEFAULT 'posted',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_expenses_user_date(user_id, expense_date),
+  INDEX idx_expenses_user_status(user_id, status),
+  INDEX idx_expenses_category(category_id),
+  INDEX idx_expenses_account(account_id),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE RESTRICT,
+  FOREIGN KEY(account_id) REFERENCES accounts(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE budgets (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  category_id BIGINT UNSIGNED NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  budget_amount DECIMAL(15,2) NOT NULL,
+  warning_threshold DECIMAL(5,2) NOT NULL DEFAULT 80.00,
+  status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_budgets_user_period(user_id, start_date, end_date),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE settings (
+  setting_key VARCHAR(120) PRIMARY KEY,
+  setting_value TEXT NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE audit_logs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  action VARCHAR(80) NOT NULL,
+  entity VARCHAR(80) NOT NULL,
+  entity_id BIGINT UNSIGNED NULL,
+  old_values JSON NULL,
+  new_values JSON NULL,
+  ip_address VARCHAR(45) NULL,
+  user_agent VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_audit_entity(entity, entity_id),
+  INDEX idx_audit_user(user_id),
+  INDEX idx_audit_created(created_at),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;

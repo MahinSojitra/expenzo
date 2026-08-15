@@ -11,6 +11,8 @@ function verify_csrf():void{if(!hash_equals((string)Session::get('_csrf',''),(st
 function flash(string $key):mixed{return Session::consumeFlash($key);}
 function auth_user():?array{return Session::get('user');}
 function can(string $permission):bool{return in_array($permission,Session::get('permissions',[]),true);}
-function money(float|int $amount):string{ $cfg=require dirname(__DIR__,2).'/config/app.php'; $symbols=['INR'=>'₹','USD'=>'$','EUR'=>'€','GBP'=>'£']; return ($symbols[$cfg['currency']]??$cfg['currency'].' ').number_format((float)$amount,2);}
+function has_role(string $role):bool{return (auth_user()['role_name']??'')===$role;}
+function is_adminish():bool{return in_array(auth_user()['role_name']??'', ['Super Admin','Admin'], true);}
+function money(float|int|string $amount):string{ $cfg=require dirname(__DIR__,2).'/config/app.php'; $symbols=['INR'=>'INR ','USD'=>'$','EUR'=>'EUR ','GBP'=>'GBP ']; return ($symbols[$cfg['currency']]??$cfg['currency'].' ').number_format((float)$amount,2);}
 function selected(mixed $a,mixed $b):string{return (string)$a===(string)$b?'selected':'';}
 function checked(mixed $v):string{return $v?'checked':'';}
