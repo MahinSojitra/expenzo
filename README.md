@@ -1,6 +1,6 @@
-# Expense Tracker — Pure PHP + MySQL
+# Expenzo - Pure PHP + MySQL Expense Tracker
 
-Production-oriented expense tracker built without Laravel or another PHP framework. The provided AdminKit template is used as the visual foundation.
+Production-oriented debit/expense tracker built without Laravel or another PHP framework. AdminKit remains the visual foundation.
 
 ## Requirements
 - PHP 8.2+
@@ -10,28 +10,50 @@ Production-oriented expense tracker built without Laravel or another PHP framewo
 
 ## Installation
 1. Copy `.env.example` to `.env` and set database credentials.
-2. Create the database by running `database/migrations/001_initial.sql`.
-3. Run `database/seeders/001_seed.sql`.
+2. Run `database/migrations/001_initial.sql` against MySQL. This is the complete fresh-install schema.
+3. Run `database/seeders/001_seed.sql`. This is the complete fresh-install seed.
 4. Point the web server document root to `public/`.
-5. Ensure `storage/` is writable by PHP. Receipt files are stored in `storage/receipts/` outside the public web root.
+5. Ensure `storage/` is writable by PHP. Receipts are stored in `storage/receipts/` outside the public web root.
 6. Visit `/login`.
 
-## Default administrator
-- Email: `admin@example.com`
-- Password: `ChangeMe123!`
-Change this password immediately in a real deployment.
+## Seed Credentials
+All seeded accounts use password `ChangeMe123!` for local development only.
+
+- Super Admin: `admin@expenzo.com`
+- Admin: `ops.admin@expenzo.com`
+- User: `user@expenzo.com`
+
+Change seeded passwords before any production deployment.
+
+## Role Model
+- Super Admin: all permissions.
+- Admin: operational administration, users, system categories, reports and read-only finance visibility; cannot assign or modify Super Admins.
+- User: own expenses, accounts, budgets, reports and category badge customization.
+
+## Ownership Rules
+Accounts, expenses, budgets and user category settings are user-owned. Repositories and services enforce `user_id` scopes, so hidden UI links are not the only protection. Category definitions are system-wide, while badge/icon/color preferences are isolated in `user_category_settings`.
 
 ## Modules
-Dashboard, Expenses, Categories, Accounts, Budgets, Reports/CSV export, Users/Roles/Permissions, Settings, Audit logging.
+Dashboard, Expenses, Categories with user badges, Accounts, Budgets, Reports/CSV export, Users, Settings and Audit logging.
 
 ## Architecture
-HTTP routing is handled by a lightweight custom router. Controllers coordinate requests, services contain business rules and transactions, repositories own SQL, views contain presentation only, and middleware enforces authentication/authorization.
+Controllers coordinate requests, services contain business rules and transactions, repositories own SQL, views contain presentation, and middleware enforces authentication/authorization.
 
 ## Security
-PDO prepared statements, password hashing, CSRF protection, strict sessions, server-side validation, role/permission checks, upload MIME validation, randomized receipt names, centralized exception handling, XSS escaping, transactional financial updates and audit logs.
+PDO prepared statements, password hashing, CSRF protection, session regeneration, inactive-user prevention, permission checks, ownership checks, upload MIME validation, randomized receipt names, XSS escaping, transactional account balance updates and audit logs.
 
 ## Testing
-Run `composer install` and `composer test` after installing the development dependency set.
+Run PHP syntax checks with:
+
+```bash
+C:\xampp\php\php.exe -l path\to\file.php
+```
+
+Or lint the project with PowerShell:
+
+```powershell
+Get-ChildItem -Recurse -Filter *.php | ForEach-Object { C:\xampp\php\php.exe -l $_.FullName }
+```
 
 ## Production
-Set `APP_ENV=production` and `APP_DEBUG=false`, use HTTPS, rotate the seeded administrator password, use a dedicated DB user with least privilege, keep `storage/` outside the public root, and configure regular database backups and log rotation.
+Set `APP_ENV=production` and `APP_DEBUG=false`, use HTTPS, rotate seeded passwords, use a least-privilege database user, keep `storage/` outside the public root, and configure backups plus log rotation.
