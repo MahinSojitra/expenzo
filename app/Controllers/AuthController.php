@@ -17,9 +17,9 @@ final class AuthController
     public function login(Request $r): void
     {
         verify_csrf();
-        $ok = (new AuthService())->login(trim((string) $r->input('email')), (string) $r->input('password'), (bool) $r->input('remember'));
-        if (!$ok) {
-            Session::flash('error', 'Invalid email or password.');
+        $result = (new AuthService())->attempt(trim((string) $r->input('email')), (string) $r->input('password'), (bool) $r->input('remember'));
+        if (!$result['ok']) {
+            Session::flash('error', $result['message']);
             Response::redirect('/login');
         }
         Session::flash('success', 'Welcome back!');
