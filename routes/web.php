@@ -15,6 +15,7 @@ return static function (Router $r): void {
     $r->get('/expenses', 'App\Controllers\ExpenseController@index');
     $r->get('/expenses/create', 'App\Controllers\ExpenseController@create');
     $r->post('/expenses', 'App\Controllers\ExpenseController@store');
+    $r->get('/expenses/{id}/receipt', 'App\Controllers\ExpenseController@receipt');
     $r->get('/expenses/{id}', 'App\Controllers\ExpenseController@show');
     $r->get('/expenses/{id}/edit', 'App\Controllers\ExpenseController@edit');
     $r->post('/expenses/{id}', 'App\Controllers\ExpenseController@update');

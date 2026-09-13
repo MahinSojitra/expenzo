@@ -126,6 +126,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
     <script src="<?= asset('select-picker.js') ?>"></script>
     <script src="<?= asset('permissions.js') ?>"></script>
     <script src="<?= asset('password-toggle.js') ?>"></script>
+    <script src="<?= asset('file-input.js') ?>"></script>
     <script src="<?= asset('toasts.js') ?>"></script>
     <script>document.addEventListener('DOMContentLoaded', () => { if (window.feather) feather.replace(); });</script>
     <?php if (!empty($scripts)): ?>    <?= $scripts ?><?php endif; ?>
