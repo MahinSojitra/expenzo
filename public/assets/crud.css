@@ -37,3 +37,20 @@
     .content { padding: 1rem .75rem; }
     .crud-form .card-body { padding: 1rem; }
 }
+/* Searchable Feather icon selector. */
+.icon-picker { position: relative; }
+.icon-picker-trigger { display: flex; align-items: center; gap: .65rem; text-align: left; min-height: 42px; width: 100%; }
+.icon-picker-trigger > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-picker-picture { display: inline-flex; flex: 0 0 20px; color: #495057; }
+.icon-picker-panel { position: absolute; top: calc(100% + 5px); left: 0; right: 0; z-index: 1050; padding: .65rem; background: #fff; border: 1px solid #ced4da; border-radius: .3rem; box-shadow: 0 6px 20px rgba(33,37,41,.14); }
+.icon-picker-panel[hidden] { display: none; }
+.icon-picker-search { width: 100%; margin-bottom: .5rem; }
+.icon-picker-options { max-height: min(240px, 40vh); overflow-y: auto; overscroll-behavior: contain; }
+.icon-picker-option { display: flex; align-items: center; gap: .75rem; min-height: 42px; padding: .55rem .65rem; cursor: pointer; border-radius: .2rem; overflow-wrap: anywhere; }
+.icon-picker-option:hover, .icon-picker-option.is-focused { background: #edf3fc; }
+.icon-picker-option[aria-selected=true] { color: #2465bd; font-weight: 600; background: #e7effb; }
+.icon-picker-empty { margin: .75rem .5rem; }
+@media (max-width: 767.98px) {
+    .icon-picker-trigger, .icon-picker-option, .icon-picker-search { min-height: 44px; }
+}
+.icon-picker > select[hidden] { display: none; }

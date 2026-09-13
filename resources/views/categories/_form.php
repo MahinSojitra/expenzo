@@ -8,7 +8,7 @@ $statusField = ['label' => 'Status', 'type' => 'select', 'options' => ['active' 
 $fields = [
     'name' => ['label' => 'Name', 'required' => true, 'maxlength' => 120, 'wide' => true],
     'description' => ['label' => 'Description', 'type' => 'textarea', 'wide' => true],
-    'icon' => ['label' => 'Default icon', 'default' => 'tag', 'required' => true, 'maxlength' => 80, 'help' => 'Use a Feather icon name, such as tag, coffee, or shopping-bag.'],
+    'icon' => ['type' => 'icon', 'label' => 'Default icon', 'default' => 'tag', 'required' => true, 'maxlength' => 80, 'help' => 'Search by name and choose an icon.'],
     'color' => ['label' => 'Default color', 'type' => 'color', 'default' => '#3b7ddd', 'required' => true],
     'status' => $statusField,
 ];

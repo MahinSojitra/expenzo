@@ -37,6 +37,20 @@ async function main() {
   const user = await login('user@expenzo.com');
   const admin = await login('ops.admin@expenzo.com');
   const superAdmin = await login('admin@expenzo.com');
+
+  async function pickIcon(page, query, iconName, keyboard = false) {
+    const trigger = page.locator('.icon-picker-trigger');
+    await trigger.click();
+    const search = page.getByRole('combobox', {name:'Search icons'});
+    await search.fill(query);
+    const option = page.locator('#icon-option-' + iconName);
+    check(await option.locator('svg').count() === 1, 'icon option has a visual preview');
+    if (keyboard) await search.press('Enter');
+    else await option.click();
+    check(await page.locator('select[name=icon]').inputValue() === iconName, 'selected icon updates submitted value');
+    check(await trigger.locator('svg').count() === 1, 'selected icon has a visual preview');
+    check(await trigger.getAttribute('aria-expanded') === 'false', 'picker closes after selection');
+  }
   async function token(page, route) {
     await page.goto(base + route);
     return await page.locator('input[name=_csrf]').first().inputValue();
@@ -101,6 +115,7 @@ async function main() {
   await save(user.page, '/budgets');
   check((await user.page.locator('tr').filter({has: user.page.locator('a[href="' + budgetEdit + '"]')}).innerText()).includes('Inactive'), 'budget edit persisted');
   await user.page.goto(base + '/categories/1/appearance');
+  await pickIcon(user.page, 'coffee', 'coffee');
   await user.page.locator('[name=badge]').fill('Mine');
   await user.page.locator('[name=color]').fill('#123456');
   await save(user.page, '/categories');
@@ -108,6 +123,7 @@ async function main() {
   await admin.page.goto(base + '/categories');
   check(!(await admin.page.locator('tbody').innerText()).includes('Mine'), 'personal appearance is isolated');
   await admin.page.goto(base + '/categories/create');
+  await pickIcon(admin.page, 'heart', 'heart');
   await admin.page.locator('[name=name]').fill('CRUD category');
   await save(admin.page, '/categories');
   const categoryEdit = await admin.page.locator('tr').filter({hasText: 'CRUD category'}).getByRole('link', {name: /Edit/}).getAttribute('href');
@@ -132,6 +148,27 @@ async function main() {
   await admin.page.getByRole('button', {name:'Search', exact:true}).click();
   check(await admin.page.locator('tbody tr').count() === 1, 'users search works');
   check((await admin.page.locator('tbody').innerText()).includes('Inactive'), 'user status update persisted');
+
+  await admin.page.goto(base + categoryEdit);
+  await pickIcon(admin.page, 'shopping bag', 'shopping-bag', true);
+  await save(admin.page, '/categories');
+  await admin.page.goto(base + categoryEdit);
+  check(await admin.page.locator('select[name=icon]').inputValue() === 'shopping-bag', 'category icon selection persists');
+  await admin.page.locator('.icon-picker-trigger').click();
+  await admin.page.getByRole('combobox', {name:'Search icons'}).fill('no-such-icon-zzzz');
+  check(await admin.page.locator('.icon-picker-options [role=option]').count() === 0, 'unknown search has no results');
+  check(await admin.page.locator('.icon-picker-empty').isVisible(), 'empty search shows guidance');
+  await admin.page.getByRole('combobox', {name:'Search icons'}).press('Escape');
+  check(await admin.page.locator('.icon-picker-trigger').evaluate(el => el === document.activeElement), 'Escape restores focus');
+  for (const width of [320, 768, 1440]) {
+    await admin.page.setViewportSize({width, height:900});
+    await admin.page.locator('.icon-picker-trigger').click();
+    await admin.page.getByRole('combobox', {name:'Search icons'}).fill('coffee');
+    const bounds = await admin.page.locator('.icon-picker-panel').boundingBox();
+    check(bounds.x >= 0 && bounds.x + bounds.width <= width + 1, 'open picker fits viewport at ' + width);
+    await admin.page.screenshot({path:path.join(root, 'storage/cache/icon-picker-' + width + '.png'), fullPage:true});
+    await admin.page.getByRole('combobox', {name:'Search icons'}).press('Escape');
+  }
   const screens = [
     [user.page, '/accounts'], [user.page, '/accounts/create'], [user.page, accountEdit],
     [user.page, '/budgets'], [user.page, '/budgets/create'], [user.page, budgetEdit],

@@ -8,7 +8,7 @@ $record['icon'] = $record['display_icon'];
 $record['color'] = $record['display_color'];
 $fields = [
     'badge' => ['label' => 'Badge', 'maxlength' => 16, 'wide' => true, 'help' => 'Optional emoji or short text, up to 16 characters.'],
-    'icon' => ['label' => 'Icon', 'required' => true, 'maxlength' => 80, 'help' => 'Use a Feather icon name, such as tag or coffee.'],
+    'icon' => ['type' => 'icon', 'label' => 'Icon', 'required' => true, 'maxlength' => 80, 'help' => 'Search by name and choose an icon.'],
     'color' => ['label' => 'Color', 'type' => 'color', 'required' => true],
 ];
 require dirname(__DIR__).'/partials/crud-form.php';
