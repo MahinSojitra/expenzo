@@ -19,7 +19,7 @@ final class DashboardService
             $month = (float) $pdo->query('SELECT COALESCE(SUM(amount),0) FROM expenses WHERE status="posted" AND DATE_FORMAT(expense_date,"%Y-%m")=DATE_FORMAT(CURDATE(),"%Y-%m")')->fetchColumn();
             $categories = (int) $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn();
             $accounts = (int) $pdo->query('SELECT COUNT(*) FROM accounts')->fetchColumn();
-            $budgetAlerts = $this->budgetAlerts(null);
+            $budgetAlerts = [];
 
             return compact('totalUsers', 'activeUsers', 'total', 'month', 'categories', 'accounts') + [
                 'admin' => true,
@@ -59,7 +59,7 @@ final class DashboardService
         ];
     }
 
-    private function budgetAlerts(?int $userId): array
+    private function budgetAlerts(int $userId): array
     {
         $sql = 'SELECT b.id,b.user_id,b.category_id,b.start_date,b.end_date,b.budget_amount,b.warning_threshold,u.name user_name,c.name category_name,
             (SELECT COALESCE(SUM(e.amount),0)
@@ -73,11 +73,8 @@ final class DashboardService
             LEFT JOIN categories c ON c.id=b.category_id
             WHERE b.status="active" AND b.start_date<=CURDATE() AND b.end_date>=CURDATE()';
 
-        $params = [];
-        if ($userId !== null) {
-            $sql .= ' AND b.user_id=?';
-            $params[] = $userId;
-        }
+        $sql .= ' AND b.user_id=?';
+        $params = [$userId];
 
         $sql .= '
             ORDER BY b.end_date ASC';

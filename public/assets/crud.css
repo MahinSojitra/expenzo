@@ -220,3 +220,17 @@ dialog.audit-drawer[open] { display:flex; flex-direction:column; animation:audit
 .status-badge--primary { color:#2459a6; background:#eaf1ff; }
 .status-badge--warning { color:#875800; background:#fff4d6; }
 .status-badge--danger { color:#b02a37; background:#fcebed; }
+/* Standalone, full-viewport error pages. */
+body.error-page { margin:0; background:#f5f7fb; }
+.error-page-main { display:grid; place-items:center; min-height:100vh; min-height:100dvh; padding:32px 20px; box-sizing:border-box; }
+.error-page-content { width:100%; max-width:520px; text-align:center; }
+.error-page-icon { display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:18px; color:#2459a6; background:#eaf1ff; margin-bottom:16px; }
+.error-page-icon svg { width:30px; height:30px; }
+.error-page-code { margin:0 0 8px; font-size:clamp(64px,12vw,100px); font-weight:700; line-height:1.1; color:#243449; }
+.error-page-content h1 { font-size:clamp(22px,5vw,28px); margin:0 0 12px; }
+.error-page-description { color:#667085; font-size:15px; line-height:1.7; margin:0 0 24px; }
+.dashboard-chart { position:relative; height:320px; min-width:0; }
+.dashboard-chart-empty { min-height:320px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#667085; text-align:center; }
+.dashboard-chart-empty svg { width:36px; height:36px; color:#98a2b3; }
+.dashboard-chart-empty p { margin:0; font-size:14px; }
+@media (max-width:575.98px) { .dashboard-chart { height:280px; } .dashboard-chart-empty { min-height:280px; } }
