@@ -1,1 +1,24 @@
-﻿<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-1">Accounts</h1><p class="text-muted mb-0"><?=is_adminish()?'View user-owned payment sources.':'Manage where your expenses are paid from.'?></p></div></div><div class="row"><div class="col-lg-4"><?php if(can('accounts.create')):?><div class="card"><div class="card-header"><h5 class="card-title mb-0">Add Account</h5></div><div class="card-body"><form method="post" action="<?=url('accounts')?>"><?=csrf_field()?><input class="form-control mb-2" name="name" placeholder="Account name" required><select class="form-select mb-2" name="type"><option>Cash</option><option>Bank</option><option>Credit Card</option><option>Debit Card</option><option>UPI</option><option>Wallet</option></select><input class="form-control mb-2" name="opening_balance" type="number" step="0.01" value="0"><textarea class="form-control mb-2" name="description" placeholder="Description"></textarea><select class="form-select mb-3" name="status"><option value="active">Active</option><option value="inactive">Inactive</option></select><button class="btn btn-primary">Create</button></form></div></div><?php endif;?></div><div class="col-lg-8"><div class="card"><div class="card-body table-responsive"><table class="table"><thead><tr><?php if(is_adminish()):?><th>User</th><?php endif;?><th>Name</th><th>Type</th><th>Balance</th><th>Status</th><?php if(can('accounts.delete')):?><th class="text-end">Actions</th><?php endif;?></tr></thead><tbody><?php foreach($rows as $r):?><tr><?php if(is_adminish()):?><td><?=e($r['user_name']??'')?></td><?php endif;?><td><div class="fw-semibold"><?=e($r['name'])?></div><small class="text-muted"><?=e($r['description']??'')?></small></td><td><?=e($r['type'])?></td><td class="fw-semibold"><?=money($r['balance'])?></td><td><span class="badge bg-<?=($r['status']==='active'?'success':'secondary')?>"><?=e($r['status'])?></span></td><?php if(can('accounts.delete')):?><td class="text-end"><form method="post" action="<?=url('accounts/'.$r['id'].'/delete')?>" onsubmit="return confirm('Delete this unused account?');"><?=csrf_field()?><button class="btn btn-sm btn-outline-danger">Delete</button></form></td><?php endif;?></tr><?php endforeach;?></tbody></table></div></div></div></div>
+<?php
+$module = 'accounts';
+$heading = 'Accounts';
+$subtitle = is_adminish() ? 'View user-owned payment sources.' : 'Manage where your expenses are paid from.';
+$actionUrl = can('accounts.create') ? 'accounts/create' : null;
+$actionLabel = '+ Add Account';
+require dirname(__DIR__).'/partials/page-header.php';
+?>
+
+<div class="card"><div class="card-body">
+<div class="table-responsive" role="region" aria-label="Accounts table" tabindex="0"><table class="table crud-table mb-0">
+<thead><tr><?php if (is_adminish()): ?><th scope="col">User</th><?php endif; ?><th scope="col">Account Name</th><th scope="col">Type</th><th scope="col">Opening Balance</th><th scope="col">Current Balance</th><th scope="col">Status</th><th scope="col" class="text-end">Actions</th></tr></thead>
+<tbody>
+<?php if (!$rows): ?><tr><td colspan="<?=is_adminish() ? 7 : 6?>" class="text-center py-5"><p class="text-muted">No accounts found.</p><?php if ($actionUrl): ?><a class="btn btn-outline-primary" href="<?=e(url($actionUrl))?>"><?=e($actionLabel)?></a><?php endif; ?></td></tr><?php endif; ?>
+<?php foreach ($rows as $r): ?>
+<tr>
+<?php if (is_adminish()): ?><td><?=e($r['user_name'] ?? '')?></td><?php endif; ?>
+<td><div class="fw-semibold"><?=e($r['name'])?></div><small class="text-muted table-description"><?=e($r['description'] ?? '')?></small></td>
+<td><?=e($r['type'])?></td><td class="text-nowrap"><?=money($r['opening_balance'])?></td><td class="fw-semibold text-nowrap"><?=money($r['balance'])?></td>
+<td><span class="badge bg-<?=$r['status'] === 'active' ? 'success' : 'secondary'?>"><?=e(ucfirst($r['status']))?></span></td>
+<td><?php $rowId = $r['id']; $rowName = $r['name']; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('accounts.edit'); $mayDelete = $owned && can('accounts.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
+</tr>
+<?php endforeach; ?>
+</tbody></table></div></div></div>

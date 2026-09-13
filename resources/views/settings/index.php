@@ -1,1 +1,38 @@
-<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Settings</h1></div><div class="card"><div class="card-body"><form method="post" action="<?=url('settings')?>"><?=csrf_field()?><div class="row"><div class="col-md-6 mb-3"><label class="form-label">Application Name</label><input class="form-control" name="app_name" value="<?=e($settings['app_name']??APP_NAME)?>"></div><div class="col-md-6 mb-3"><label class="form-label">Currency</label><select class="form-select" name="currency"><option <?=selected($settings['currency']??'INR','INR')?>>INR</option><option <?=selected($settings['currency']??'','USD')?>>USD</option><option <?=selected($settings['currency']??'','EUR')?>>EUR</option><option <?=selected($settings['currency']??'','GBP')?>>GBP</option></select></div><div class="col-md-6 mb-3"><label class="form-label">Date Format</label><input class="form-control" name="date_format" value="<?=e($settings['date_format']??'Y-m-d')?>"></div><div class="col-md-6 mb-3"><label class="form-label">Timezone</label><input class="form-control" name="timezone" value="<?=e($settings['timezone']??'Asia/Kolkata')?>"></div><div class="col-md-6 mb-3"><label class="form-label">Pagination Size</label><input class="form-control" type="number" name="pagination_size" value="<?=e($settings['pagination_size']??'10')?>"></div><div class="col-md-6 mb-3"><label class="form-label">Budget Warning Thresholds</label><input class="form-control" name="budget_warning_thresholds" value="<?=e($settings['budget_warning_thresholds']??'75,90,100')?>"></div></div><button class="btn btn-primary">Save Settings</button></form></div></div>
+<?php
+$heading = 'Settings';
+$subtitle = 'Configure application preferences.';
+$actionUrl = null;
+$record = $settings;
+$errors = [];
+?>
+<div class="crud-form">
+<?php require dirname(__DIR__).'/partials/page-header.php'; ?>
+<div class="card"><div class="card-body">
+<form method="post" action="<?=e(url('settings'))?>">
+<?=csrf_field()?>
+<h2 class="h5 mb-3">General</h2>
+<div class="row">
+<?php
+$fields = [
+    'app_name' => ['label' => 'Application name', 'default' => APP_NAME],
+    'currency' => ['label' => 'Currency', 'type' => 'select', 'options' => ['INR' => 'INR', 'USD' => 'USD', 'EUR' => 'EUR', 'GBP' => 'GBP'], 'default' => 'INR'],
+    'date_format' => ['label' => 'Date format', 'default' => 'Y-m-d'],
+    'timezone' => ['label' => 'Timezone', 'default' => 'Asia/Kolkata'],
+];
+require dirname(__DIR__).'/partials/form-fields.php';
+?>
+</div>
+<h2 class="h5 mt-2 mb-3">Lists and budget alerts</h2>
+<div class="row">
+<?php
+$fields = [
+    'pagination_size' => ['label' => 'Pagination size', 'type' => 'number', 'default' => 10],
+    'budget_warning_thresholds' => ['label' => 'Budget warning thresholds', 'default' => '75,90,100'],
+];
+require dirname(__DIR__).'/partials/form-fields.php';
+?>
+</div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">Save Settings</button></div>
+</form>
+</div></div>
+</div>

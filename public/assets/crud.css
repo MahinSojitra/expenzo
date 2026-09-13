@@ -1,0 +1,39 @@
+.main, .content, .container-fluid { min-width: 0; }
+.page-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.page-header > div { min-width: 0; }
+.page-header p { overflow-wrap: anywhere; }
+.page-header > .btn { flex-shrink: 0; }
+.crud-form { width: 100%; max-width: 900px; margin-inline: auto; }
+.crud-form .card-body { padding: 1.75rem; }
+.form-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .75rem; padding-top: 1.25rem; border-top: 1px solid #e5e9ef; margin-top: .5rem; }
+.crud-table { width: 100%; }
+.crud-table th { white-space: nowrap; }
+.crud-table td, .crud-table th { padding: 1rem .75rem; vertical-align: middle; }
+.table-description { min-width: 180px; max-width: 360px; overflow-wrap: anywhere; }
+.table-actions { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; }
+.table-actions .btn { white-space: nowrap; min-height: 34px; display: inline-flex; align-items: center; }
+.table-actions form { margin: 0; }
+.table-responsive { max-width: 100%; overscroll-behavior-x: contain; }
+.category-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 38px; min-height: 38px; padding: .4rem .6rem; border-radius: .5rem; color: white; }
+.category-badge svg { width: 18px; height: 18px; }
+.budget-usage { min-width: 150px; }
+.budget-usage .progress { height: 8px; margin-bottom: .35rem; }
+.list-search { display: flex; align-items: flex-end; flex-wrap: wrap; gap: .75rem; max-width: 760px; }
+.form-control[type=color] { min-height: 40px; padding: .35rem; }
+.navbar .nav-icon > span { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 767.98px) {
+    .content { padding: 1.25rem 1rem; }
+    .page-header { align-items: stretch; }
+    .page-header > div { flex: 1 1 100%; }
+    .page-header > .btn { width: 100%; }
+    .crud-form .card-body { padding: 1.25rem; }
+    .form-actions > .btn { flex: 1 1 0; min-height: 44px; }
+    .table-actions .btn { min-height: 44px; }
+    .list-search > div { flex-basis: 100%; }
+    .list-search > .btn { flex: 1; min-height: 44px; }
+    .navbar .nav-icon > span { max-width: 140px; font-size: .875rem; }
+}
+@media (max-width: 375px) {
+    .content { padding: 1rem .75rem; }
+    .crud-form .card-body { padding: 1rem; }
+}
