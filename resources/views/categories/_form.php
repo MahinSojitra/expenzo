@@ -1,7 +1,9 @@
 <?php
 $module = 'categories';
 $heading = $editing ? 'Edit Category' : 'Add Category';
-$subtitle = 'Manage the system category details.';
+$global = $editing ? $record['owner_id'] === null : can('categories.manage_global');
+$subtitle = $global ? 'Global category, available to everyone.' : 'Personal category, available only to its owner.';
+$formNote = $editing && !empty($record['owner_name']) ? 'Owner: '.$record['owner_name'].'. Ownership and scope cannot be changed.' : ($global ? 'This category will be available to all users.' : 'This category belongs to you.');
 $formAction = $editing ? $module.'/'.$record['id'].'/update' : $module;
 $submitLabel = $editing ? 'Update Category' : 'Save Category';
 $statusField = ['label' => 'Status', 'type' => 'select', 'options' => ['active' => 'Active', 'inactive' => 'Inactive'], 'default' => 'active', 'required' => true];

@@ -45,7 +45,7 @@ final class BudgetController
     {
         $errors = CrudValidation::validate('budgets', $data, $editing);
         if (($data['category_id'] ?? '') !== '') {
-            $category = (new CategoryRepository())->find((int)$data['category_id']);
+            $category = (new CategoryRepository())->findForUser((int)$data['category_id'], (int)Session::get('user_id'));
             if (!$category || (string)$category['id'] !== (string)$data['category_id']) $errors['category_id'] = 'Choose a valid category.';
         }
         return $errors;

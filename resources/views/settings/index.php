@@ -10,6 +10,7 @@ $errors = [];
 <div class="card"><div class="card-body">
 <form method="post" action="<?=e(url('settings'))?>">
 <?=csrf_field()?>
+<fieldset <?=can('settings.edit') ? '' : 'disabled'?>>
 <h2 class="h5 mb-3">General</h2>
 <div class="row">
 <?php
@@ -32,7 +33,8 @@ $fields = [
 require dirname(__DIR__).'/partials/form-fields.php';
 ?>
 </div>
-<div class="form-actions"><button class="btn btn-primary" type="submit">Save Settings</button></div>
+<?php if (can('settings.edit')): ?><div class="form-actions"><button class="btn btn-primary" type="submit">Save Settings</button></div><?php endif; ?>
+</fieldset>
 </form>
 </div></div>
 </div>

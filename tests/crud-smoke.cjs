@@ -74,7 +74,7 @@ async function main() {
       check(await actor.page.locator('main input[name=name]').count() === 0, module + ' has no embedded create form');
     }
   }
-  await status(user.page, '/categories/create', 403);
+  await status(user.page, '/categories/create', 200);
   await status(user.page, '/categories/1/edit', 403);
   await status(user.page, '/users/create', 403);
   await status(admin.page, '/accounts/create', 403);
@@ -169,6 +169,7 @@ async function main() {
     await admin.page.screenshot({path:path.join(root, 'storage/cache/icon-picker-' + width + '.png'), fullPage:true});
     await admin.page.getByRole('combobox', {name:'Search icons'}).press('Escape');
   }
+  await require('./scope-role-checks.cjs')({base,user,admin,superAdmin,fixtures,login,token,post,status,save,check});
   const screens = [
     [user.page, '/accounts'], [user.page, '/accounts/create'], [user.page, accountEdit],
     [user.page, '/budgets'], [user.page, '/budgets/create'], [user.page, budgetEdit],

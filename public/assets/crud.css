@@ -54,3 +54,13 @@
     .icon-picker-trigger, .icon-picker-option, .icon-picker-search { min-height: 44px; }
 }
 .icon-picker > select[hidden] { display: none; }
+
+.role-form { max-width: 1200px; margin-inline: auto; }
+.permission-group { min-width: 0; }
+.permission-group legend { float: none; width: auto; font-size: 1rem; margin-bottom: .75rem; }
+.permission-group .form-check-label { overflow-wrap: anywhere; cursor: pointer; }
+.permission-tools { display: flex; gap: .5rem; flex-wrap: wrap; }
+@media (max-width: 767.98px) {
+    .permission-tools .btn { min-height: 44px; }
+    .permission-group .form-check { min-height: 44px; }
+}

@@ -1,11 +1,15 @@
-﻿USE expenzo;
+USE expenzo;
 
-INSERT INTO roles(name) VALUES ('Super Admin'),('Admin'),('User');
+INSERT INTO roles(name,description,is_system,system_key) VALUES
+('Super Admin','Protected full system access.',1,'super_admin'),
+('Admin','Operations, global categories, user and custom role administration.',1,'admin'),
+('User','Personal expenses, accounts, budgets and categories.',1,'user');
 
 INSERT INTO permissions(name) VALUES
 ('dashboard.view'),
 ('expenses.view'),('expenses.create'),('expenses.edit'),('expenses.delete'),
 ('categories.view'),('categories.create'),('categories.edit'),('categories.delete'),('categories.customize'),
+('categories.view_all'),('categories.manage_global'),('categories.manage_all'),('finance.view_all'),
 ('categories.badge.view'),('categories.badge.edit'),
 ('accounts.view'),('accounts.create'),('accounts.edit'),('accounts.delete'),
 ('budgets.view'),('budgets.create'),('budgets.edit'),('budgets.delete'),
@@ -32,6 +36,8 @@ SELECT r.id,p.id FROM roles r CROSS JOIN permissions p WHERE r.name='Super Admin
 INSERT INTO role_permissions(role_id,permission_id)
 SELECT r.id,p.id FROM roles r JOIN permissions p ON p.name IN (
 'dashboard.view','expenses.view','categories.view','categories.create','categories.edit','categories.delete',
+'categories.view_all','categories.manage_global','categories.manage_all','categories.customize','finance.view_all',
+'roles.view','roles.create','roles.edit','roles.delete','permissions.view','permissions.manage',
 'accounts.view','budgets.view','reports.view','reports.export','users.view','users.create','users.edit','users.delete','users.assign_role','settings.view'
 ) WHERE r.name='Admin';
 

@@ -12,13 +12,13 @@ final class PermissionMiddleware
     {
         AuthMiddleware::require();
         $user = (new UserRepository())->findWithRole((int)Session::get('user_id'));
-        if (!$user || $user['status'] !== 'active' || !in_array($permission, $user['permissions'] ?? [], true)) {
+        $active = $user && $user['status'] === 'active' && $user['role_status'] === 'active';
+        Session::put('user', $user);
+        Session::put('permissions', $active ? $user['permissions'] : []);
+        if (!$active || !in_array($permission, $user['permissions'], true)) {
             http_response_code(403);
             View::render('errors/403', [], 'app');
             exit;
         }
-        // Keep role-sensitive controller checks and navigation consistent with current permissions.
-        Session::put('user', $user);
-        Session::put('permissions', $user['permissions']);
     }
 }

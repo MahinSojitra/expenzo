@@ -2,12 +2,13 @@
 declare(strict_types=1);
 namespace App\Controllers;
 
-use App\Core\Database;
 use App\Core\Request;
 use App\Core\View;
 use App\Middleware\PermissionMiddleware;
 use App\Repositories\UserRepository;
+use App\Services\Authorization;
 use App\Services\CrudValidation;
+use App\Services\UserManagementService;
 
 final class UserController
 {
@@ -16,21 +17,24 @@ final class UserController
     public function index(Request $r): void
     {
         PermissionMiddleware::require('users.view');
-        $data = (new UserRepository())->all((string)$r->query('q', ''), max(1, (int)$r->query('page', 1)), 10, auth_user());
+        $repo = new UserRepository();
+        $data = $repo->all((string)$r->query('q', ''), max(1, (int)$r->query('page', 1)), 10, auth_user());
+        foreach ($data['rows'] as &$row) $row['may_edit'] = Authorization::canManageUser(auth_user(), $repo->findWithRole((int)$row['id']));
+        unset($row);
         View::render('users/index', compact('data'));
     }
 
     private function target(int $id): array
     {
         $target = $this->missing((new UserRepository())->findWithRole($id));
-        if ($target['role_name'] === 'Super Admin' && !has_role('Super Admin')) $this->forbidden();
-        $target['role_id'] = (new UserRepository())->roleIdByName($target['role_name'] ?? '');
+        if (!Authorization::canManageUser(auth_user(), $target)) $this->forbidden();
         return $target;
     }
 
     public function create(Request $r): void
     {
         PermissionMiddleware::require('users.create');
+        PermissionMiddleware::require('users.assign_role');
         $this->form();
     }
 
@@ -44,71 +48,44 @@ final class UserController
     {
         if ($errors) http_response_code(422);
         $roles = (new UserRepository())->roles(auth_user());
-        View::render('users/' . (isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors', 'roles'));
+        View::render('users/'.(isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors', 'roles'));
     }
 
-    private function validate(array $data, ?int $id = null): array
+    private function submit(Request $r, ?array $record): void
     {
-        $errors = CrudValidation::validate('users', $data, $id !== null);
-        $repo = new UserRepository();
-        $role = $repo->roleNameById((int)($data['role_id'] ?? 0));
-        if (!$role || ($role === 'Super Admin' && !has_role('Super Admin'))) {
-            $errors['role_id'] = 'Choose a role you are allowed to assign.';
+        $data = $r->all();
+        if ($record && !can('users.assign_role')) {
+            if (isset($data['role_id']) && (int)$data['role_id'] !== (int)$record['role_id']) $this->forbidden();
+            $data['role_id'] = $record['role_id'];
         }
-        $existing = $repo->findByEmail(trim((string)($data['email'] ?? '')));
-        if ($existing && (int)$existing['id'] !== $id) $errors['email'] = 'This email address is already in use.';
-        return $errors;
-    }
-
-    private function persist(array $data, ?int $id): void
-    {
-        $pdo = Database::connection();
-        $repo = new UserRepository();
-        $pdo->beginTransaction();
-        try {
-            if ($id === null) $id = $repo->create($data);
-            else {
-                unset($data['password']);
-                $repo->update($id, $data);
+        $errors = CrudValidation::validate('users', $data, $record !== null);
+        $existing = (new UserRepository())->findByEmail(trim((string)($data['email'] ?? '')));
+        if ($existing && (int)$existing['id'] !== (int)($record['id'] ?? 0)) $errors['email'] = 'This email address is already in use.';
+        if (!$errors) {
+            try {
+                (new UserManagementService())->save($record ? (int)$record['id'] : null, $data, auth_user());
+                $this->saved('users', $record ? 'User updated successfully.' : 'User created successfully.');
+            } catch (\DomainException $e) {
+                $errors['role_id'] = $e->getMessage();
+            } catch (\PDOException $e) {
+                $errors = $this->persistenceError($e, 'email');
             }
-            $repo->setRole($id, (int)$data['role_id']);
-            $pdo->commit();
-        } catch (\Throwable $e) {
-            $pdo->rollBack();
-            throw $e;
         }
+        $this->form($record ?? [], $errors);
     }
 
     public function store(Request $r): void
     {
         PermissionMiddleware::require('users.create');
+        PermissionMiddleware::require('users.assign_role');
         verify_csrf();
-        $errors = $this->validate($r->all());
-        if (!$errors) {
-            try {
-                $this->persist($r->all(), null);
-                $this->saved('users', 'User created successfully.');
-            } catch (\PDOException $e) {
-                $errors = $this->persistenceError($e, 'email');
-            }
-        }
-        $this->form([], $errors);
+        $this->submit($r, null);
     }
 
     public function update(Request $r, string $id): void
     {
         PermissionMiddleware::require('users.edit');
         verify_csrf();
-        $record = $this->target((int)$id);
-        $errors = $this->validate($r->all(), (int)$id);
-        if (!$errors) {
-            try {
-                $this->persist($r->all(), (int)$id);
-                $this->saved('users', 'User updated successfully.');
-            } catch (\PDOException $e) {
-                $errors = $this->persistenceError($e, 'email');
-            }
-        }
-        $this->form($record, $errors);
+        $this->submit($r, $this->target((int)$id));
     }
 }

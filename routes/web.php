@@ -20,7 +20,7 @@ return static function (Router $r): void {
     $r->post('/expenses/{id}', 'App\Controllers\ExpenseController@update');
     $r->post('/expenses/{id}/delete', 'App\Controllers\ExpenseController@delete');
 
-    foreach (['categories' => 'Category', 'accounts' => 'Account', 'budgets' => 'Budget', 'users' => 'User'] as $module => $controller) {
+    foreach (['categories' => 'Category', 'accounts' => 'Account', 'budgets' => 'Budget', 'users' => 'User', 'roles' => 'Role'] as $module => $controller) {
         $handler = 'App\\Controllers\\' . $controller . 'Controller@';
         $r->get('/' . $module, $handler . 'index');
         $r->get('/' . $module . '/create', $handler . 'create');

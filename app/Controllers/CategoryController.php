@@ -7,53 +7,57 @@ use App\Core\Session;
 use App\Core\View;
 use App\Middleware\PermissionMiddleware;
 use App\Repositories\CategoryRepository;
+use App\Services\Authorization;
 use App\Services\CrudValidation;
 
 final class CategoryController
 {
     use CrudForm;
 
-    private function manage(string $permission): void
+    private function target(int $id): array
     {
-        PermissionMiddleware::require($permission);
-        if (!is_adminish()) $this->forbidden();
+        $record = $this->missing((new CategoryRepository())->find($id));
+        if (!Authorization::categoryVisible(auth_user(), $record)) return $this->missing(null);
+        if (!Authorization::categoryManageable(auth_user(), $record)) $this->forbidden();
+        return $record;
     }
 
     public function index(Request $r): void
     {
         PermissionMiddleware::require('categories.view');
         $repo = new CategoryRepository();
-        $rows = is_adminish() ? $repo->all() : $repo->allForUser((int)Session::get('user_id'));
-        View::render('categories/index', compact('rows'));
+        $filters = ['scope' => (string)$r->query('scope', ''), 'owner_id' => (string)$r->query('owner_id', ''), 'status' => (string)$r->query('status', '')];
+        $rows = can('categories.view_all') ? $repo->all($filters) : $repo->allForUser((int)Session::get('user_id'));
+        $owners = can('categories.view_all') ? $repo->owners() : [];
+        View::render('categories/index', compact('rows', 'filters', 'owners'));
     }
 
     public function create(Request $r): void
     {
-        $this->manage('categories.create');
+        PermissionMiddleware::require('categories.create');
         $this->form();
     }
 
     public function edit(Request $r, string $id): void
     {
-        $this->manage('categories.edit');
-        $this->form($this->missing((new CategoryRepository())->find((int)$id)));
+        PermissionMiddleware::require('categories.edit');
+        $this->form($this->target((int)$id));
     }
 
     private function form(array $record = [], array $errors = []): void
     {
         if ($errors) http_response_code(422);
-        View::render('categories/' . (isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors'));
+        View::render('categories/'.(isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors'));
     }
 
     public function store(Request $r): void
     {
-        $this->manage('categories.create');
+        PermissionMiddleware::require('categories.create');
         verify_csrf();
-        $data = $r->all();
-        $errors = CrudValidation::validate('categories', $data);
+        $errors = CrudValidation::validate('categories', $r->all());
         if (!$errors) {
             try {
-                (new CategoryRepository())->create($data, (int)Session::get('user_id'));
+                (new CategoryRepository())->create($r->all(), auth_user());
                 $this->saved('categories', 'Category created successfully.');
             } catch (\PDOException $e) {
                 $errors = $this->persistenceError($e, 'name');
@@ -64,15 +68,13 @@ final class CategoryController
 
     public function update(Request $r, string $id): void
     {
-        $this->manage('categories.edit');
+        PermissionMiddleware::require('categories.edit');
         verify_csrf();
-        $repo = new CategoryRepository();
-        $record = $this->missing($repo->find((int)$id));
-        $data = $r->all();
-        $errors = CrudValidation::validate('categories', $data);
+        $record = $this->target((int)$id);
+        $errors = CrudValidation::validate('categories', $r->all());
         if (!$errors) {
             try {
-                $repo->update((int)$id, $data);
+                (new CategoryRepository())->update((int)$id, $r->all(), auth_user());
                 $this->saved('categories', 'Category updated successfully.');
             } catch (\PDOException $e) {
                 $errors = $this->persistenceError($e, 'name');
@@ -113,10 +115,9 @@ final class CategoryController
 
     public function delete(Request $r, string $id): void
     {
-        $this->manage('categories.delete');
+        PermissionMiddleware::require('categories.delete');
         verify_csrf();
-        $repo = new CategoryRepository();
-        $this->missing($repo->find((int)$id));
-        $this->removeRecord('categories', fn() => $repo->delete((int)$id), 'Category deleted successfully.');
+        $this->target((int)$id);
+        $this->removeRecord('categories', fn() => (new CategoryRepository())->delete((int)$id, auth_user()), 'Category deleted successfully.');
     }
 }
