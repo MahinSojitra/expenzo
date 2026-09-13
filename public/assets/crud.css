@@ -234,3 +234,4 @@ body.error-page { margin:0; background:#f5f7fb; }
 .dashboard-chart-empty svg { width:36px; height:36px; color:#98a2b3; }
 .dashboard-chart-empty p { margin:0; font-size:14px; }
 @media (max-width:575.98px) { .dashboard-chart { height:280px; } .dashboard-chart-empty { min-height:280px; } }
+.select-picker-currency { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; font-size:18px; font-weight:500; line-height:1; }

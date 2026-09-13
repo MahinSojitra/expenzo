@@ -55,7 +55,7 @@ $pretty = static function ($value) use ($redact): string {
 <?php foreach ($data['rows'] as $row): ?>
 <tr>
 <td><?=e($row['entity_id'] ?? '—')?></td>
-<td class="text-nowrap"><?=e($row['created_at'])?></td>
+<td class="text-nowrap"><?=e(display_date($row['created_at'], true))?></td>
 <td><div class="audit-user"><i data-feather="user" aria-hidden="true"></i><div><strong><?=e($row['user_name'] ?? ($row['user_id'] ? 'Deleted user' : 'System'))?></strong><small class="text-muted"><?=e($row['user_email'] ?? '')?></small></div></div></td>
 <td><span class="audit-action audit-action--<?=e($actionColors[$row['action']] ?? 'secondary')?>"><i data-feather="<?=e($actionIcons[$row['action']] ?? 'activity')?>" aria-hidden="true"></i><?=e($label($row['action']))?></span></td>
 <td><span class="audit-entity"><i data-feather="<?=e($entityIcons[$row['entity']] ?? 'box')?>" aria-hidden="true"></i><?=e($label($row['entity']))?></span></td>
@@ -65,7 +65,7 @@ $pretty = static function ($value) use ($redact): string {
 <template id="audit-detail-<?=e($row['id'])?>">
     <dl class="audit-drawer-meta">
         <div><dt><i data-feather="user" aria-hidden="true"></i>User</dt><dd><?=e($row['user_name'] ?? 'System')?><small><?=e($row['user_email'] ?? '')?></small></dd></div>
-        <div><dt><i data-feather="calendar" aria-hidden="true"></i>Date &amp; time</dt><dd><?=e($row['created_at'])?></dd></div>
+        <div><dt><i data-feather="calendar" aria-hidden="true"></i>Date &amp; time</dt><dd><?=e(display_date($row['created_at'], true))?></dd></div>
         <div><dt><i data-feather="<?=e($actionIcons[$row['action']] ?? 'activity')?>" aria-hidden="true"></i>Action</dt><dd><?=e($label($row['action']))?></dd></div>
         <div><dt><i data-feather="<?=e($entityIcons[$row['entity']] ?? 'box')?>" aria-hidden="true"></i>Entity / record</dt><dd><?=e($label($row['entity']))?> / <?=e($row['entity_id'] ?? '—')?></dd></div>
         <div><dt><i data-feather="globe" aria-hidden="true"></i>IP address</dt><dd><?=e($row['ip_address'] ?? 'Not recorded')?></dd></div>

@@ -22,6 +22,7 @@
         const name = (select.name || select.id || '').toLowerCase();
         const text = option.textContent.trim().toLowerCase();
         const value = String(option.value || '').toLowerCase();
+        if (name === 'currency') return 'currency-' + value.toUpperCase();
         const haystack = `${name} ${text} ${value}`;
 
         if (option.dataset.accountType) return accountIcon(option.dataset.accountType);
@@ -55,6 +56,15 @@
     function renderIcon(container, icon) {
         const icons = featherIcons();
         container.replaceChildren();
+        const currencySymbols = {'currency-INR':'\u20B9', 'currency-USD':'$', 'currency-EUR':'\u20AC', 'currency-GBP':'\u00A3'};
+        if (currencySymbols[icon]) {
+            const symbol = document.createElement('span');
+            symbol.className = 'select-picker-currency';
+            symbol.setAttribute('aria-hidden', 'true');
+            symbol.textContent = currencySymbols[icon];
+            container.append(symbol);
+            return;
+        }
         if (icons[icon]) {
             container.innerHTML = icons[icon].toSvg({'aria-hidden': 'true', width: 18, height: 18});
         }

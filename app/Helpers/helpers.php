@@ -3,7 +3,11 @@ declare(strict_types=1);
 use App\Core\Session;
 function e(mixed $v):string{return htmlspecialchars((string)$v,ENT_QUOTES,'UTF-8');}
 function url(string $path=''):string{$base=rtrim(str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']??'')),'/'); if($base==='/'||$base==='.')$base=''; return $base.'/'.ltrim($path,'/');}
-function asset(string $path):string{return url('assets/'.ltrim($path,'/'));}
+function asset(string $path):string{
+    $relative = ltrim($path, '/');
+    $file = dirname(__DIR__,2).'/public/assets/'.$relative;
+    return url('assets/'.$relative).(is_file($file) ? '?v='.filemtime($file) : '');
+}
 function old(string $key,mixed $default=''):mixed{return $_POST[$key]??$default;}
 function csrf_token():string{if(!Session::get('_csrf'))Session::put('_csrf',bin2hex(random_bytes(32)));return Session::get('_csrf');}
 function csrf_field():string{return '<input type="hidden" name="_csrf" value="'.e(csrf_token()).'">';}
@@ -23,4 +27,20 @@ function landing_path():string {
         if(can($module.'.view')) return '/'.$module;
     }
     return '/dashboard';
+}
+/** Format display dates using the saved preference; form values stay ISO. */
+function display_date(?string $value, bool $withTime = false): string
+{
+    if ($value === null || $value === '') return '—';
+    static $format = null;
+    if ($format === null) {
+        $saved = \App\Core\Database::connection()->query("SELECT setting_value FROM settings WHERE setting_key='date_format'")->fetchColumn();
+        $format = is_string($saved) && trim($saved) !== '' ? $saved : 'Y-m-d';
+    }
+    try {
+        $date = new \DateTimeImmutable($value);
+        return $date->format($format . ($withTime ? ' H:i:s' : ''));
+    } catch (\Exception $exception) {
+        return '—';
+    }
 }

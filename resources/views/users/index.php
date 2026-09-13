@@ -19,7 +19,7 @@ require dirname(__DIR__).'/partials/page-header.php';
 <?php $rows = $data['rows']; ?>
 <?php if (!$rows): ?><tr><td colspan="6" class="text-center py-5"><p class="text-muted">No users found.</p><?php if ($actionUrl): ?><a class="action-button action-button--success btn btn-outline-primary" href="<?=e(url($actionUrl))?>"><i data-feather="plus-circle" aria-hidden="true"></i><?=e(ltrim($actionLabel, "+ "))?></a><?php endif; ?></td></tr><?php endif; ?>
 <?php foreach ($rows as $u): ?>
-<tr><td class="fw-semibold"><?=e($u['name'])?></td><td><?=e($u['email'])?></td><td><?=e($u['role_names'])?></td><td><span class="status-badge status-badge--<?=in_array($u['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($u['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($u['status']))?></span></td><td class="text-nowrap"><?=e(substr($u['created_at'], 0, 10))?></td>
+<tr><td class="fw-semibold"><?=e($u['name'])?></td><td><?=e($u['email'])?></td><td><?=e($u['role_names'])?></td><td><span class="status-badge status-badge--<?=in_array($u['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($u['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($u['status']))?></span></td><td class="text-nowrap"><?=e(display_date($u['created_at']))?></td>
 <td><?php $rowId = $u['id']; $rowName = $u['name']; $mayEdit = can('users.edit') && ($u['may_edit'] ?? false); $mayDelete = false; require dirname(__DIR__).'/partials/row-actions.php'; ?></td></tr>
 <?php endforeach; ?>
 </tbody></table></div>
