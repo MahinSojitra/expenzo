@@ -22,7 +22,7 @@ $remaining = $r['budget_amount'] - $r['spent'];
 <tr>
 <?php if (is_adminish()): ?><td><?=e($r['user_name'] ?? '')?></td><?php endif; ?>
 <td class="text-nowrap"><?=e(display_date($r['start_date']))?><br><small class="text-muted">to <?=e(display_date($r['end_date']))?></small></td>
-<td><?=e($r['category_name'] ?? 'All Categories')?></td>
+<td><?=category_label($r['category_name'] ?? 'All Categories', $r['category_icon'] ?? ($r['category_name'] ? 'tag' : 'layers'), $r['category_color'] ?? null, $r['badge'] ?? null)?></td>
 <td class="text-nowrap"><?=money($r['budget_amount'])?></td><td class="text-nowrap"><?=money($r['spent'])?></td><td class="text-nowrap <?=$remaining < 0 ? 'text-danger' : ''?>"><?=money($remaining)?></td>
 <td class="budget-usage"><div class="progress" role="progressbar" aria-label="Budget usage" aria-valuenow="<?=max(0, min(100, $pct))?>" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar <?=$isLimitReached ? 'bg-danger' : ($isWarning ? 'bg-warning' : '')?>" style="width:<?=max(0, min(100, $pct))?>%"></div></div><div class="budget-usage-meta"><small><?=number_format($pct, 1)?>%</small><?php if ($isLimitReached): ?><span class="status-badge status-badge--danger"><i data-feather="alert-octagon" aria-hidden="true"></i>Limit reached</span><?php elseif ($isWarning): ?><span class="status-badge status-badge--warning"><i data-feather="alert-triangle" aria-hidden="true"></i>Warning</span><?php endif; ?></div></td>
 <td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>

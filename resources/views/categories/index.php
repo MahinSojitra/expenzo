@@ -26,7 +26,7 @@ require dirname(__DIR__).'/partials/page-header.php';
 <td><span class="category-badge" style="background-color:<?=e(preg_match('/^#[a-fA-F0-9]{6}$/D', $r['display_color'] ?? '') ? $r['display_color'] : '#3b7ddd')?>"><?php if (!empty($r['badge'])): ?><?=e($r['badge'])?><?php else: ?><i data-feather="<?=e($r['display_icon'] ?? 'tag')?>"></i><?php endif; ?></span></td>
 <td class="fw-semibold"><?=e($r['name'])?></td>
 <td><span class="status-badge status-badge--<?=$r['owner_id'] === null ? 'primary' : 'neutral'?>"><i data-feather="<?=$r['owner_id'] === null ? 'globe' : 'user'?>" aria-hidden="true"></i><?=$r['owner_id'] === null ? 'Global' : 'Personal'?></span></td>
-<?php if ($showOwner): ?><td><?=e($r['owner_name'] ?? 'Everyone')?></td><?php endif; ?>
+<?php if ($showOwner): ?><td><span class="inline-icon-text"><i data-feather="<?=$r['owner_id'] === null ? 'users' : 'user'?>" aria-hidden="true"></i><?=e($r['owner_name'] ?? 'Everyone')?></span></td><?php endif; ?>
 <td class="table-description"><?=e($r['description'] ?? '')?></td>
 <td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>
 <td><?php

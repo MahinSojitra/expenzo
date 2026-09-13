@@ -18,6 +18,13 @@
     </select>
     <?php elseif ($type === 'textarea'): ?>
     <textarea id="<?=e($name)?>" name="<?=e($name)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" rows="4" maxlength="16000" <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>><?=e($value)?></textarea>
+    <?php elseif ($type === 'number' && in_array($name, ['amount', 'budget_amount', 'opening_balance'], true)): ?>
+    <div class="input-group amount-input-group">
+        <span class="input-group-text currency-input-icon" aria-hidden="true"><?=currency_icon()?></span>
+        <input id="<?=e($name)?>" name="<?=e($name)?>" type="number" value="<?=e($value)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?>
+            <?php foreach (['min', 'max', 'step', 'maxlength', 'minlength', 'autocomplete'] as $attr): if (isset($field[$attr])): ?> <?=e($attr)?>="<?=e($field[$attr])?>"<?php endif; endforeach; ?>
+            <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
+    </div>
     <?php else: ?>
     <input id="<?=e($name)?>" name="<?=e($name)?>" type="<?=e($type)?>" value="<?=e($value)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?> <?=$type === 'password' ? 'data-password-toggle' : ''?>
         <?php foreach (['min', 'max', 'step', 'maxlength', 'minlength', 'autocomplete'] as $attr): if (isset($field[$attr])): ?> <?=e($attr)?>="<?=e($field[$attr])?>"<?php endif; endforeach; ?>

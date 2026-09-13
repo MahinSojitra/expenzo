@@ -16,7 +16,7 @@ require dirname(__DIR__).'/partials/page-header.php';
 <tr>
 <?php if (is_adminish()): ?><td><?=e($r['user_name'] ?? '')?></td><?php endif; ?>
 <td><div class="fw-semibold"><?=e($r['name'])?></div><small class="text-muted table-description"><?=e($r['description'] ?? '')?></small></td>
-<td><?=e($r['type'])?></td><td class="text-nowrap"><?=money($r['opening_balance'])?></td><td class="fw-semibold text-nowrap"><?=money($r['balance'])?></td>
+<td><?=account_type_label($r['type'] ?? '')?></td><td class="text-nowrap"><?=money($r['opening_balance'])?></td><td class="fw-semibold text-nowrap"><?=money($r['balance'])?></td>
 <td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>
 <td><?php $rowId = $r['id']; $rowName = $r['name']; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('accounts.edit'); $mayDelete = $owned && can('accounts.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
 </tr>

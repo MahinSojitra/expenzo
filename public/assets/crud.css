@@ -11,6 +11,8 @@ html, body { min-height: 100%; overflow-y: auto !important; }
 .footer { flex-shrink: 0; }
 .main, .content, .container-fluid { min-width: 0; }
 .form-control, .form-select, .btn { min-height: var(--ex-control-height); }
+.amount-input-group .input-group-text { align-items:center; display:inline-flex; justify-content:center; min-height:var(--ex-control-height); width:44px; }
+.amount-input-group .input-group-text svg, .currency-input-icon svg { height:16px; width:16px; }
 .btn:not(.btn-sm):not(.btn-lg), .select-picker-trigger, .icon-picker-trigger { align-items: center; display: inline-flex; }
 .form-control, .form-select { width: 100%; }
 textarea.form-control { display: block; min-height: auto; }
@@ -216,6 +218,11 @@ dialog.audit-drawer[open] { display:flex; flex-direction:column; animation:audit
 /* Consistent status and scope badges. */
 .status-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border-radius:6px; font-size:12px; font-weight:600; line-height:1.4; vertical-align:middle; white-space:nowrap; color:#526173; background:#edf0f4; }
 .status-badge svg { width:14px; height:14px; flex:0 0 14px; }
+.inline-icon-text { align-items:center; display:inline-flex; gap:.55rem; min-height:24px; }
+.inline-icon-text > svg { color:#495057; flex:0 0 16px; height:16px; width:16px; }
+.inline-category-icon { align-items:center; background:color-mix(in srgb, var(--category-color) 14%, white); border-radius:6px; color:var(--category-color); display:inline-flex; flex:0 0 28px; height:28px; justify-content:center; width:28px; }
+.inline-category-icon svg { height:16px; width:16px; }
+.inline-category-badge-text { font-size:14px; font-weight:700; line-height:1; }
 .status-badge--success { color:#146c43; background:#e5f5ec; }
 .status-badge--primary { color:#2459a6; background:#eaf1ff; }
 .status-badge--warning { color:#875800; background:#fff4d6; }
