@@ -1,3 +1,8 @@
+html, body { min-height: 100%; overflow-y: auto !important; }
+.wrapper { min-height: 100vh; }
+.main { display: flex; flex-direction: column; min-height: 100vh; }
+.content { flex: 1 0 auto; }
+.footer { flex-shrink: 0; }
 .main, .content, .container-fluid { min-width: 0; }
 .page-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
 .page-header > div { min-width: 0; }
@@ -35,6 +40,19 @@
 .user-menu-role { color: #3b7ddd; font-size: .78rem; font-weight: 700; line-height: 1.35; margin-top: .1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .user-menu-dropdown .dropdown-item { align-items: center; display: flex; font-size: .9rem; gap: .25rem; min-height: 38px; }
 .password-toggle .password-toggle-btn { min-width: 4.25rem; }
+.app-toast-container { max-width: min(390px, calc(100vw - 1rem)); z-index: 1090; }
+.app-toast { background: #fff; border: 1px solid #e5e9ef; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgba(33, 37, 41, .18); overflow: hidden; width: min(370px, calc(100vw - 1rem)); }
+.app-toast-content { align-items: flex-start; display: grid; gap: .8rem; grid-template-columns: 2.25rem minmax(0, 1fr) auto; padding: 1rem; }
+.app-toast-icon { align-items: center; border-radius: 50%; display: inline-flex; height: 2.25rem; justify-content: center; margin-top: .05rem; width: 2.25rem; }
+.app-toast-icon svg { height: 18px; width: 18px; }
+.app-toast-copy { min-width: 0; padding-top: .05rem; }
+.app-toast-title { color: #212529; font-size: .92rem; font-weight: 700; line-height: 1.25; margin-bottom: .2rem; }
+.app-toast-message { color: #495057; font-size: .875rem; line-height: 1.45; overflow-wrap: anywhere; }
+.app-toast-close { margin-top: .05rem; opacity: .55; }
+.app-toast-close:hover, .app-toast-close:focus { opacity: .85; }
+.app-toast-danger .app-toast-icon { background: #fdecef; color: #dc3545; }
+.app-toast-success .app-toast-icon { background: #e9f8f3; color: #1cbb8c; }
+.app-toast-primary .app-toast-icon { background: #edf3fc; color: #3b7ddd; }
 @media (max-width: 767.98px) {
     .content { padding: 1.25rem 1rem; }
     .page-header { align-items: stretch; }
@@ -48,6 +66,7 @@
     .user-menu-toggle { gap: .45rem; padding-inline: .35rem; }
     .user-menu-name { font-size: .875rem; max-width: 130px; }
     .user-menu-dropdown { min-width: min(280px, calc(100vw - 1.5rem)); }
+    .app-toast-container { padding: .5rem !important; }
 }
 @media (max-width: 375px) {
     .content { padding: 1rem .75rem; }

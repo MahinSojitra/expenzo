@@ -18,7 +18,6 @@ $navigation = [
 $currentUser = auth_user() ?? [];
 $currentUserName = $currentUser['name'] ?? 'User';
 $currentUserEmail = $currentUser['email'] ?? '';
-$currentUserRole = $currentUser['role_name'] ?? 'No role';
 ?>
 <!doctype html>
 <html lang="en">
@@ -106,11 +105,6 @@ $currentUserRole = $currentUser['role_name'] ?? 'No role';
             </nav>
             <main class="content">
                 <div class="container-fluid p-0">
-                    <?php foreach (['success' => 'success', 'error' => 'danger'] as $key => $style):
-                        if ($message = flash($key)): ?>
-                            <div class="alert alert-<?= $style ?> alert-dismissible" role="alert"><?= e($message) ?><button
-                                    type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Dismiss"></button></div>
-                        <?php endif; endforeach; ?>
                     <?= $content ?>
                 </div>
             </main>
@@ -126,10 +120,12 @@ $currentUserRole = $currentUser['role_name'] ?? 'No role';
             </footer>
         </div>
     </div>
+    <?php require dirname(__DIR__).'/partials/toasts.php'; ?>
     <script src="<?= asset('app.js') ?>"></script>
     <script src="<?= asset('icon-picker.js') ?>"></script>
     <script src="<?= asset('permissions.js') ?>"></script>
     <script src="<?= asset('password-toggle.js') ?>"></script>
+    <script src="<?= asset('toasts.js') ?>"></script>
     <script>document.addEventListener('DOMContentLoaded', () => { if (window.feather) feather.replace(); });</script>
     <?php if (!empty($scripts)): ?>    <?= $scripts ?><?php endif; ?>
 </body>
