@@ -16,7 +16,7 @@
     <?php elseif ($type === 'textarea'): ?>
     <textarea id="<?=e($name)?>" name="<?=e($name)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" rows="4" maxlength="16000" <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>><?=e($value)?></textarea>
     <?php else: ?>
-    <input id="<?=e($name)?>" name="<?=e($name)?>" type="<?=e($type)?>" value="<?=e($value)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?>
+    <input id="<?=e($name)?>" name="<?=e($name)?>" type="<?=e($type)?>" value="<?=e($value)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?> <?=$type === 'password' ? 'data-password-toggle' : ''?>
         <?php foreach (['min', 'max', 'step', 'maxlength', 'minlength', 'autocomplete'] as $attr): if (isset($field[$attr])): ?> <?=e($attr)?>="<?=e($field[$attr])?>"<?php endif; endforeach; ?>
         <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
     <?php endif; ?>
