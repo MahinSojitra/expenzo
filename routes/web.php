@@ -2,6 +2,8 @@
 declare(strict_types=1);
 use App\Core\Router;
 return static function(Router $r):void{
+ $r->get('/register','App\Controllers\AuthController@showRegister');
+ $r->post('/register','App\Controllers\AuthController@register');
  $r->get('/','App\Controllers\DashboardController@index');
  $r->get('/login','App\Controllers\AuthController@showLogin');$r->post('/login','App\Controllers\AuthController@login');$r->get('/logout','App\Controllers\AuthController@logout');
  $r->get('/dashboard','App\Controllers\DashboardController@index');
