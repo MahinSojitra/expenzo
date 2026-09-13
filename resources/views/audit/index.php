@@ -23,7 +23,7 @@ $pretty = static function ($value) use ($redact): string {
 ?>
 <div class="card"><div class="card-body">
 <form method="get" action="<?=e(url('audit-logs'))?>" class="audit-filters">
-    <div><label for="audit-search" class="form-label">Search</label><input id="audit-search" class="form-control" name="q" value="<?=e($filters['q'])?>" placeholder="Name, email, record or IP"></div>
+    <div><label for="audit-search" class="form-label">Search</label><div class="input-group search-input-group"><span class="input-group-text"><i data-feather="search" aria-hidden="true"></i></span><input id="audit-search" class="form-control" name="q" value="<?=e($filters['q'])?>" placeholder="Name, email, record or IP"></div></div>
     <div><label for="audit-action" class="form-label">Action</label><select id="audit-action" class="form-select" name="action">
         <option value="" data-icon="activity">All actions</option>
         <?php foreach ($options['actions'] as $option): $value = $option['action']; ?>

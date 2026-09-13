@@ -9,7 +9,7 @@ require dirname(__DIR__).'/partials/page-header.php';
 
 <div class="card"><div class="card-body">
 <form method="get" action="<?=e(url('users'))?>" class="list-search mb-4" role="search">
-    <div class="flex-grow-1"><label for="user-search" class="form-label">Search users</label><input id="user-search" class="form-control" name="q" value="<?=e($_GET['q'] ?? '')?>" placeholder="Name or email"></div>
+    <div class="flex-grow-1"><label for="user-search" class="form-label">Search users</label><div class="input-group search-input-group"><span class="input-group-text"><i data-feather="search" aria-hidden="true"></i></span><input id="user-search" class="form-control" name="q" value="<?=e($_GET['q'] ?? '')?>" placeholder="Name or email"></div></div>
     <button class="action-button action-button--primary btn btn-primary" type="submit"><i data-feather="search" aria-hidden="true"></i>Search</button>
     <?php if (!empty($_GET['q'])): ?><a class="action-button action-button--neutral btn btn-outline-secondary" href="<?=e(url('users'))?>"><i data-feather="rotate-ccw" aria-hidden="true"></i>Clear</a><?php endif; ?>
 </form>

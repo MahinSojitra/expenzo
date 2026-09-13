@@ -59,10 +59,11 @@ function account_type_icon(?string $type): string
         default => 'credit-card',
     };
 }
-function account_type_label(?string $type): string
+function account_type_label(?string $type, ?string $name = null): string
 {
-    $label = trim((string)$type);
-    return '<span class="inline-icon-text"><i data-feather="'.e(account_type_icon($label)).'" aria-hidden="true"></i>'.e($label !== '' ? $label : 'Account').'</span>';
+    $type = trim((string)$type);
+    $label = trim((string)$name) !== '' ? trim((string)$name) : ($type !== '' ? $type : 'Account');
+    return '<span class="inline-icon-text"><i data-feather="'.e(account_type_icon($type)).'" aria-hidden="true"></i>'.e($label).'</span>';
 }
 function category_label(?string $name, ?string $icon = null, ?string $color = null, ?string $badge = null): string
 {

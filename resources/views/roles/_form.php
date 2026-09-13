@@ -6,7 +6,7 @@ $system = !empty($record['is_system']);
 $moduleLabels = ['dashboard'=>'Dashboard','expenses'=>'Expenses','categories'=>'Categories','accounts'=>'Accounts','budgets'=>'Budgets','reports'=>'Reports','users'=>'Users','roles'=>'Roles','permissions'=>'Permission Administration','settings'=>'Settings','audit'=>'Audit Logs','finance'=>'Finance Visibility'];
 ?>
 <div class="role-form">
-<a class="d-inline-block mb-3" href="<?=e(url('roles'))?>">&larr; Back to Roles</a>
+<a class="action-button action-button--neutral btn btn-outline-secondary mb-3" href="<?=e(url('roles'))?>"><i data-feather="arrow-left" aria-hidden="true"></i>Back to Roles</a>
 <?php require dirname(__DIR__).'/partials/page-header.php'; ?>
 <form method="post" action="<?=e(url($editing ? 'roles/'.$record['id'].'/update' : 'roles'))?>" data-permissions-form>
 <?=csrf_field()?>

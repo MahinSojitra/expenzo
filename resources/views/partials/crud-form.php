@@ -1,6 +1,5 @@
 <div class="crud-form">
-    <a class="d-inline-block mb-3" href="<?=e(url($module))?>">&larr; Back to <?=e(ucfirst($module))?></a>
-    <?php $actionUrl = null; require __DIR__.'/page-header.php'; ?>
+    <?php $actionUrl = null; $backUrl = $module; $backLabel = 'Back to '.ucfirst($module); require __DIR__.'/page-header.php'; ?>
     <div class="card"><div class="card-body">
         <?php if ($errors): ?><div class="alert alert-danger" role="alert">Please correct the highlighted fields and save again.</div><?php endif; ?>
         <form method="post" action="<?=e(url($formAction))?>">
