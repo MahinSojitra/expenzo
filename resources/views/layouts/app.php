@@ -15,6 +15,10 @@ $navigation = [
         'settings' => ['Settings', 'settings', 'settings.view'],
     ],
 ];
+$currentUser = auth_user() ?? [];
+$currentUserName = $currentUser['name'] ?? 'User';
+$currentUserEmail = $currentUser['email'] ?? '';
+$currentUserRole = $currentUser['role_name'] ?? 'No role';
 ?>
 <!doctype html>
 <html lang="en">
@@ -77,11 +81,24 @@ $navigation = [
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item dropdown">
-                            <a class="nav-icon dropdown-toggle d-inline-flex align-items-center gap-2" href="#"
-                                data-bs-toggle="dropdown"><i
-                                    data-feather="user"></i><span><?= e(auth_user()['name'] ?? 'User') ?></span></a>
-                            <div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item"
-                                    href="<?= url('logout') ?>"><i data-feather="log-out" class="me-2"></i>Logout</a>
+                            <a class="nav-link user-menu-toggle dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <span class="user-menu-avatar"><i data-feather="user"></i></span>
+                                <span class="user-menu-name"><?= e($currentUserName) ?></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end user-menu-dropdown">
+                                <div class="user-menu-header">
+                                    <span class="user-menu-avatar user-menu-avatar-lg"><i data-feather="user"></i></span>
+                                    <div class="user-menu-meta">
+                                        <div class="user-menu-fullname"><?= e($currentUserName) ?></div>
+                                        <?php if ($currentUserEmail !== ''): ?><div class="user-menu-email"><?= e($currentUserEmail) ?></div><?php endif; ?>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <?php if (can('settings.view')): ?>
+                                <a class="dropdown-item" href="<?= url('settings') ?>"><i data-feather="settings" class="me-2"></i>Settings</a>
+                                <?php endif; ?>
+                                <a class="dropdown-item" href="<?= url('logout') ?>"><i data-feather="log-out" class="me-2"></i>Logout</a>
                             </div>
                         </li>
                     </ul>

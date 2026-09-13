@@ -20,7 +20,20 @@
 .budget-usage .progress { height: 8px; margin-bottom: .35rem; }
 .list-search { display: flex; align-items: flex-end; flex-wrap: wrap; gap: .75rem; max-width: 760px; }
 .form-control[type=color] { min-height: 40px; padding: .35rem; }
-.navbar .nav-icon > span { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-menu-toggle { align-items: center; color: #495057; display: inline-flex; gap: .55rem; min-height: 48px; padding-inline: .75rem; }
+.user-menu-toggle:hover, .user-menu-toggle:focus { color: #212529; }
+.user-menu-avatar { align-items: center; background: #eef3fb; border: 1px solid #d9e4f5; border-radius: 50%; color: #3b7ddd; display: inline-flex; flex: 0 0 32px; height: 32px; justify-content: center; width: 32px; }
+.user-menu-avatar svg { height: 17px; width: 17px; }
+.user-menu-avatar-lg { flex-basis: 42px; height: 42px; width: 42px; }
+.user-menu-avatar-lg svg { height: 21px; width: 21px; }
+.user-menu-name { display: block; font-size: .95rem; font-weight: 600; line-height: 1.2; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-menu-dropdown { min-width: 280px; padding-block: .5rem; }
+.user-menu-header { align-items: center; display: flex; gap: .75rem; min-width: 0; padding: .75rem 1rem .65rem; }
+.user-menu-meta { min-width: 0; }
+.user-menu-fullname { color: #212529; font-size: .95rem; font-weight: 700; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-menu-email { color: #6c757d; font-size: .8rem; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-menu-role { color: #3b7ddd; font-size: .78rem; font-weight: 700; line-height: 1.35; margin-top: .1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-menu-dropdown .dropdown-item { align-items: center; display: flex; font-size: .9rem; gap: .25rem; min-height: 38px; }
 .password-toggle .password-toggle-btn { min-width: 4.25rem; }
 @media (max-width: 767.98px) {
     .content { padding: 1.25rem 1rem; }
@@ -32,7 +45,9 @@
     .table-actions .btn { min-height: 44px; }
     .list-search > div { flex-basis: 100%; }
     .list-search > .btn { flex: 1; min-height: 44px; }
-    .navbar .nav-icon > span { max-width: 140px; font-size: .875rem; }
+    .user-menu-toggle { gap: .45rem; padding-inline: .35rem; }
+    .user-menu-name { font-size: .875rem; max-width: 130px; }
+    .user-menu-dropdown { min-width: min(280px, calc(100vw - 1.5rem)); }
 }
 @media (max-width: 375px) {
     .content { padding: 1rem .75rem; }
