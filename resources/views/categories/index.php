@@ -1,1 +1,42 @@
-﻿<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-1">Categories</h1><p class="text-muted mb-0"><?=is_adminish()?'Manage system expense categories.':'Customize category badges for your own tracking.'?></p></div></div><div class="row"><div class="col-lg-4"><?php if(can('categories.create')):?><div class="card"><div class="card-header"><h5 class="card-title mb-0">Add Category</h5></div><div class="card-body"><form method="post" action="<?=url('categories')?>"><?=csrf_field()?><input class="form-control mb-2" name="name" placeholder="Name" required><textarea class="form-control mb-2" name="description" placeholder="Description"></textarea><input class="form-control mb-2" name="icon" value="tag" placeholder="Feather icon"><input class="form-control mb-2" type="color" name="color" value="#3b7ddd"><select class="form-select mb-3" name="status"><option value="active">Active</option><option value="inactive">Inactive</option></select><button class="btn btn-primary">Create</button></form></div></div><?php endif;?></div><div class="col-lg-8"><div class="card"><div class="card-body table-responsive"><table class="table"><thead><tr><th>Badge</th><th>Category</th><th>Status</th><th class="text-end">Actions</th></tr></thead><tbody><?php foreach($rows as $r):?><tr><td><span class="badge rounded-pill" style="background:<?=e($r['display_color']??$r['color'])?>;font-size:1rem"><?=e($r['badge']?:'')?></span></td><td><div class="fw-semibold"><i data-feather="<?=e($r['display_icon']??$r['icon'])?>" class="me-1"></i><?=e($r['name'])?></div><small class="text-muted"><?=e($r['description']??'')?></small></td><td><span class="badge bg-<?=($r['status']==='active'?'success':'secondary')?>"><?=e($r['status'])?></span></td><td class="text-end"><?php if(can('categories.customize')):?><form class="d-inline-flex gap-1" method="post" action="<?=url('categories/'.$r['id'])?>"><?=csrf_field()?><input type="hidden" name="customize" value="1"><input class="form-control form-control-sm" style="width:70px" name="badge" value="<?=e($r['badge']??'')?>" placeholder="Badge"><input class="form-control form-control-sm" type="color" style="width:45px" name="color" value="<?=e($r['display_color']??$r['color'])?>"><input type="hidden" name="icon" value="<?=e($r['display_icon']??$r['icon'])?>"><button class="btn btn-sm btn-outline-primary">Save</button></form><?php endif;?><?php if(is_adminish()&&can('categories.delete')):?><form class="d-inline" method="post" action="<?=url('categories/'.$r['id'].'/delete')?>" onsubmit="return confirm('Delete this category?');"><?=csrf_field()?><button class="btn btn-sm btn-outline-danger">Delete</button></form><?php endif;?></td></tr><?php endforeach;?></tbody></table></div></div></div></div>
+<?php
+use App\Services\Authorization;
+$module = 'categories';
+$heading = 'Categories';
+$subtitle = can('categories.view_all') ? 'Manage global and user-owned categories.' : 'Use global categories or create your own personal categories.';
+$actionUrl = can('categories.create') ? 'categories/create' : null;
+$actionLabel = '+ Add Category';
+$showOwner = can('categories.view_all');
+require dirname(__DIR__).'/partials/page-header.php';
+?>
+<div class="card"><div class="card-body">
+<?php if ($showOwner): ?>
+<form method="get" action="<?=e(url('categories'))?>" class="row g-3 align-items-end mb-4">
+<div class="col-md-3"><label for="scope" class="form-label">Scope</label><select id="scope" name="scope" class="form-select"><option value="">All Categories</option><option value="global" <?=selected($filters['scope'],'global')?>>Global Categories</option><option value="personal" <?=selected($filters['scope'],'personal')?>>Personal Categories</option></select></div>
+<div class="col-md-4"><label for="owner_id" class="form-label">Owner</label><select id="owner_id" name="owner_id" class="form-select"><option value="">All users</option><?php foreach ($owners as $owner): ?><option value="<?=e($owner['id'])?>" <?=selected($filters['owner_id'],$owner['id'])?>><?=e($owner['name'].' ('.$owner['email'].')')?></option><?php endforeach; ?></select></div>
+<div class="col-md-2"><label for="filter-status" class="form-label">Status</label><select id="filter-status" name="status" class="form-select"><option value="">All statuses</option><option value="active" <?=selected($filters['status'],'active')?>>Active</option><option value="inactive" <?=selected($filters['status'],'inactive')?>>Inactive</option></select></div>
+<div class="col-md-3 d-flex gap-2"><button class="action-button action-button--primary btn btn-primary" type="submit"><i data-feather="filter" aria-hidden="true"></i>Filter</button><a class="action-button action-button--neutral btn btn-outline-secondary" href="<?=e(url('categories'))?>"><i data-feather="rotate-ccw" aria-hidden="true"></i>Clear</a></div>
+</form>
+<?php endif; ?>
+<div class="table-responsive" role="region" aria-label="Categories table" tabindex="0"><table class="table crud-table mb-0">
+<thead><tr><th scope="col">Badge / Icon</th><th scope="col">Category</th><th scope="col">Scope</th><?php if ($showOwner): ?><th scope="col">Owner</th><?php endif; ?><th scope="col">Description</th><th scope="col">Status</th><th scope="col" class="text-end">Actions</th></tr></thead>
+<tbody>
+<?php if (!$rows): ?><tr><td colspan="<?=$showOwner ? 7 : 6?>" class="text-center py-5"><p class="text-muted">No categories found.</p><?php if ($actionUrl): ?><a class="action-button action-button--success btn btn-outline-primary" href="<?=e(url($actionUrl))?>"><i data-feather="plus-circle" aria-hidden="true"></i><?=e(ltrim($actionLabel, "+ "))?></a><?php endif; ?></td></tr><?php endif; ?>
+<?php foreach ($rows as $r): ?>
+<tr>
+<td><span class="category-badge" style="background-color:<?=e(preg_match('/^#[a-fA-F0-9]{6}$/D', $r['display_color'] ?? '') ? $r['display_color'] : '#3b7ddd')?>"><?php if (!empty($r['badge'])): ?><?=e($r['badge'])?><?php else: ?><i data-feather="<?=e($r['display_icon'] ?? 'tag')?>"></i><?php endif; ?></span></td>
+<td class="fw-semibold"><?=e($r['name'])?></td>
+<td><span class="status-badge status-badge--<?=$r['owner_id'] === null ? 'primary' : 'neutral'?>"><i data-feather="<?=$r['owner_id'] === null ? 'globe' : 'user'?>" aria-hidden="true"></i><?=$r['owner_id'] === null ? 'Global' : 'Personal'?></span></td>
+<?php if ($showOwner): ?><td><span class="inline-icon-text"><i data-feather="<?=$r['owner_id'] === null ? 'users' : 'user'?>" aria-hidden="true"></i><?=e($r['owner_name'] ?? 'Everyone')?></span></td><?php endif; ?>
+<td class="table-description"><?=e($r['description'] ?? '')?></td>
+<td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>
+<td><?php
+$rowId = $r['id']; $rowName = $r['name'];
+$manageable = Authorization::categoryManageable(auth_user(), $r);
+$mayEdit = $manageable && can('categories.edit');
+$mayDelete = $manageable && can('categories.delete');
+$mayAppearance = can('categories.customize') && Authorization::categoryCustomizable(auth_user(), $r);
+require dirname(__DIR__).'/partials/row-actions.php';
+?></td>
+</tr>
+<?php endforeach; ?>
+</tbody></table></div></div></div>

@@ -1,1 +1,33 @@
-﻿<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-1">Budgets</h1><p class="text-muted mb-0"><?=is_adminish()?'Review user budget usage.':'Track spending against your limits.'?></p></div></div><div class="row"><div class="col-lg-4"><?php if(can('budgets.create')):?><div class="card"><div class="card-header"><h5 class="card-title mb-0">Create Budget</h5></div><div class="card-body"><form method="post" action="<?=url('budgets')?>"><?=csrf_field()?><select class="form-select mb-2" name="category_id"><option value="">All Categories</option><?php foreach($categories as $c):?><option value="<?=$c['id']?>"><?=e($c['name'])?></option><?php endforeach;?></select><input class="form-control mb-2" type="date" name="start_date" required value="<?=date('Y-m-01')?>"><input class="form-control mb-2" type="date" name="end_date" required value="<?=date('Y-m-t')?>"><input class="form-control mb-2" type="number" step="0.01" min="0.01" name="budget_amount" placeholder="Budget amount" required><input class="form-control mb-3" type="number" step="1" min="1" max="100" name="warning_threshold" value="80"><button class="btn btn-primary">Create Budget</button></form></div></div><?php endif;?></div><div class="col-lg-8"><div class="card"><div class="card-body table-responsive"><table class="table"><thead><tr><?php if(is_adminish()):?><th>User</th><?php endif;?><th>Period</th><th>Category</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>Usage</th><th></th></tr></thead><tbody><?php foreach($rows as $r):$pct=$r['budget_amount']>0?($r['spent']/$r['budget_amount'])*100:0;$remaining=$r['budget_amount']-$r['spent'];?><tr><?php if(is_adminish()):?><td><?=e($r['user_name']??'')?></td><?php endif;?><td><?=e($r['start_date'])?> to <?=e($r['end_date'])?></td><td><?=e($r['category_name']??'All Categories')?></td><td><?=money($r['budget_amount'])?></td><td><?=money($r['spent'])?></td><td class="<?=($remaining<0?'text-danger':'')?>"><?=money($remaining)?></td><td style="min-width:140px"><div class="progress"><div class="progress-bar <?=($pct>=100?'bg-danger':($pct>=($r['warning_threshold']??80)?'bg-warning':''))?>" style="width:<?=min(100,$pct)?>%"></div></div><small><?=number_format($pct,1)?>%</small></td><td><?php if(can('budgets.delete')&&!is_adminish()):?><form method="post" action="<?=url('budgets/'.$r['id'].'/delete')?>" onsubmit="return confirm('Delete budget?');"><?=csrf_field()?><button class="btn btn-sm btn-outline-danger">Delete</button></form><?php endif;?></td></tr><?php endforeach;?></tbody></table></div></div></div></div>
+<?php
+$module = 'budgets';
+$heading = 'Budgets';
+$subtitle = is_adminish() ? 'Review user budget usage.' : 'Track spending against your limits.';
+$actionUrl = can('budgets.create') ? 'budgets/create' : null;
+$actionLabel = '+ Create Budget';
+require dirname(__DIR__).'/partials/page-header.php';
+?>
+
+<div class="card"><div class="card-body">
+<div class="table-responsive" role="region" aria-label="Budgets table" tabindex="0"><table class="table crud-table mb-0">
+<thead><tr><?php if (is_adminish()): ?><th scope="col">User</th><?php endif; ?><th scope="col">Period</th><th scope="col">Category</th><th scope="col">Budget</th><th scope="col">Spent</th><th scope="col">Remaining</th><th scope="col">Usage</th><th scope="col">Status</th><th scope="col" class="text-end">Actions</th></tr></thead>
+<tbody>
+<?php if (!$rows): ?><tr><td colspan="<?=is_adminish() ? 9 : 8?>" class="text-center py-5"><p class="text-muted">No budgets found.</p><?php if ($actionUrl): ?><a class="action-button action-button--success btn btn-outline-primary" href="<?=e(url($actionUrl))?>"><i data-feather="plus-circle" aria-hidden="true"></i><?=e(ltrim($actionLabel, "+ "))?></a><?php endif; ?></td></tr><?php endif; ?>
+<?php foreach ($rows as $r):
+$pct = $r['budget_amount'] > 0 ? ($r['spent'] / $r['budget_amount']) * 100 : 0;
+$warningThreshold = (float)($r['warning_threshold'] ?? 80);
+$isLimitReached = $pct >= 100;
+$isWarning = !$isLimitReached && $pct >= $warningThreshold;
+$remaining = $r['budget_amount'] - $r['spent'];
+?>
+<tr>
+<?php if (is_adminish()): ?><td><?=e($r['user_name'] ?? '')?></td><?php endif; ?>
+<td class="text-nowrap"><?=e(display_date($r['start_date']))?><br><small class="text-muted">to <?=e(display_date($r['end_date']))?></small></td>
+<td><?=category_label($r['category_name'] ?? 'All Categories', $r['category_icon'] ?? ($r['category_name'] ? 'tag' : 'layers'), $r['category_color'] ?? null, $r['badge'] ?? null)?></td>
+<td class="text-nowrap"><?=money($r['budget_amount'])?></td><td class="text-nowrap"><?=money($r['spent'])?></td><td class="text-nowrap <?=$remaining < 0 ? 'text-danger' : ''?>"><?=money($remaining)?></td>
+<td class="budget-usage"><div class="progress" role="progressbar" aria-label="Budget usage" aria-valuenow="<?=max(0, min(100, $pct))?>" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar <?=$isLimitReached ? 'bg-danger' : ($isWarning ? 'bg-warning' : '')?>" style="width:<?=max(0, min(100, $pct))?>%"></div></div><div class="budget-usage-meta"><small><?=number_format($pct, 1)?>%</small><?php if ($isLimitReached): ?><span class="status-badge status-badge--danger"><i data-feather="alert-octagon" aria-hidden="true"></i>Limit reached</span><?php elseif ($isWarning): ?><span class="status-badge status-badge--warning"><i data-feather="alert-triangle" aria-hidden="true"></i>Warning</span><?php endif; ?></div></td>
+<td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>
+<td><?php $rowId = $r['id']; $rowName = 'budget'; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('budgets.edit'); $mayDelete = $owned && can('budgets.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
+</tr>
+<?php endforeach; ?>
+</tbody></table></div></div></div>
+

@@ -1,4 +1,4 @@
-﻿CREATE DATABASE IF NOT EXISTS expenzo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS expenzo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE expenzo;
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,6 +30,11 @@ CREATE TABLE users (
 CREATE TABLE roles (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(80) NOT NULL UNIQUE,
+  description TEXT NULL,
+  status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+  is_system TINYINT(1) NOT NULL DEFAULT 0,
+  system_key VARCHAR(40) NULL UNIQUE,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -42,16 +47,16 @@ CREATE TABLE permissions (
 CREATE TABLE user_roles (
   user_id BIGINT UNSIGNED NOT NULL,
   role_id INT UNSIGNED NOT NULL,
-  PRIMARY KEY(user_id, role_id),
+  PRIMARY KEY(user_id),
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE
+  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE role_permissions (
   role_id INT UNSIGNED NOT NULL,
   permission_id INT UNSIGNED NOT NULL,
   PRIMARY KEY(role_id, permission_id),
-  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE,
+  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE RESTRICT,
   FOREIGN KEY(permission_id) REFERENCES permissions(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
@@ -62,11 +67,15 @@ CREATE TABLE categories (
   icon VARCHAR(80) NOT NULL DEFAULT 'tag',
   color VARCHAR(20) NOT NULL DEFAULT '#3b7ddd',
   status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+  owner_id BIGINT UNSIGNED NULL,
+  owner_scope BIGINT UNSIGNED GENERATED ALWAYS AS (COALESCE(owner_id,0)) STORED,
   created_by BIGINT UNSIGNED NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_categories_name(name),
+  UNIQUE KEY uq_categories_owner_name(owner_scope,name),
   INDEX idx_categories_status(status),
+  INDEX idx_categories_owner_status(owner_id,status),
+  FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE RESTRICT,
   FOREIGN KEY(created_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 

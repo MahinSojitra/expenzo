@@ -1,11 +1,14 @@
-﻿USE expenzo;
+USE expenzo;
 
-INSERT INTO roles(name) VALUES ('Super Admin'),('Admin'),('User');
+INSERT INTO roles(name,description,is_system,system_key) VALUES
+('Super Admin','Protected full system access.',1,'super_admin'),
+('User','Personal expenses, accounts, budgets and categories.',1,'user');
 
 INSERT INTO permissions(name) VALUES
 ('dashboard.view'),
 ('expenses.view'),('expenses.create'),('expenses.edit'),('expenses.delete'),
 ('categories.view'),('categories.create'),('categories.edit'),('categories.delete'),('categories.customize'),
+('categories.view_all'),('categories.manage_global'),('categories.manage_all'),('finance.view_all'),
 ('categories.badge.view'),('categories.badge.edit'),
 ('accounts.view'),('accounts.create'),('accounts.edit'),('accounts.delete'),
 ('budgets.view'),('budgets.create'),('budgets.edit'),('budgets.delete'),
@@ -18,22 +21,14 @@ INSERT INTO permissions(name) VALUES
 
 INSERT INTO users(name,email,password_hash,status,created_at,updated_at) VALUES
 ('System Administrator','admin@expenzo.com','$2y$10$ua.R9og84rbeQeYWbHi2.OFoC7yB43Owla1JljOJkSj0KDnIaGClu','active',NOW(),NOW()),
-('Operations Admin','ops.admin@expenzo.com','$2y$10$ua.R9og84rbeQeYWbHi2.OFoC7yB43Owla1JljOJkSj0KDnIaGClu','active',NOW(),NOW()),
 ('Demo User','user@expenzo.com','$2y$10$ua.R9og84rbeQeYWbHi2.OFoC7yB43Owla1JljOJkSj0KDnIaGClu','active',NOW(),NOW());
 
 INSERT INTO user_roles(user_id,role_id)
 SELECT u.id,r.id FROM users u JOIN roles r ON r.name='Super Admin' WHERE u.email='admin@expenzo.com'
-UNION ALL SELECT u.id,r.id FROM users u JOIN roles r ON r.name='Admin' WHERE u.email='ops.admin@expenzo.com'
 UNION ALL SELECT u.id,r.id FROM users u JOIN roles r ON r.name='User' WHERE u.email='user@expenzo.com';
 
 INSERT INTO role_permissions(role_id,permission_id)
 SELECT r.id,p.id FROM roles r CROSS JOIN permissions p WHERE r.name='Super Admin';
-
-INSERT INTO role_permissions(role_id,permission_id)
-SELECT r.id,p.id FROM roles r JOIN permissions p ON p.name IN (
-'dashboard.view','expenses.view','categories.view','categories.create','categories.edit','categories.delete',
-'accounts.view','budgets.view','reports.view','reports.export','users.view','users.create','users.edit','users.delete','users.assign_role','settings.view'
-) WHERE r.name='Admin';
 
 INSERT INTO role_permissions(role_id,permission_id)
 SELECT r.id,p.id FROM roles r JOIN permissions p ON p.name IN (
