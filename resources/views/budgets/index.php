@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $module = 'budgets';
 $heading = 'Budgets';
 $subtitle = is_adminish() ? 'Review user budget usage.' : 'Track spending against your limits.';
@@ -11,7 +11,7 @@ require dirname(__DIR__).'/partials/page-header.php';
 <div class="table-responsive" role="region" aria-label="Budgets table" tabindex="0"><table class="table crud-table mb-0">
 <thead><tr><?php if (is_adminish()): ?><th scope="col">User</th><?php endif; ?><th scope="col">Period</th><th scope="col">Category</th><th scope="col">Budget</th><th scope="col">Spent</th><th scope="col">Remaining</th><th scope="col">Usage</th><th scope="col">Status</th><th scope="col" class="text-end">Actions</th></tr></thead>
 <tbody>
-<?php if (!$rows): ?><tr><td colspan="<?=is_adminish() ? 9 : 8?>" class="text-center py-5"><p class="text-muted">No budgets found.</p><?php if ($actionUrl): ?><a class="btn btn-outline-primary" href="<?=e(url($actionUrl))?>"><?=e($actionLabel)?></a><?php endif; ?></td></tr><?php endif; ?>
+<?php if (!$rows): ?><tr><td colspan="<?=is_adminish() ? 9 : 8?>" class="text-center py-5"><p class="text-muted">No budgets found.</p><?php if ($actionUrl): ?><a class="action-button action-button--success btn btn-outline-primary" href="<?=e(url($actionUrl))?>"><i data-feather="plus-circle" aria-hidden="true"></i><?=e(ltrim($actionLabel, "+ "))?></a><?php endif; ?></td></tr><?php endif; ?>
 <?php foreach ($rows as $r):
 $pct = $r['budget_amount'] > 0 ? ($r['spent'] / $r['budget_amount']) * 100 : 0;
 $warningThreshold = (float)($r['warning_threshold'] ?? 80);
@@ -24,8 +24,8 @@ $remaining = $r['budget_amount'] - $r['spent'];
 <td class="text-nowrap"><?=e($r['start_date'])?><br><small class="text-muted">to <?=e($r['end_date'])?></small></td>
 <td><?=e($r['category_name'] ?? 'All Categories')?></td>
 <td class="text-nowrap"><?=money($r['budget_amount'])?></td><td class="text-nowrap"><?=money($r['spent'])?></td><td class="text-nowrap <?=$remaining < 0 ? 'text-danger' : ''?>"><?=money($remaining)?></td>
-<td class="budget-usage"><div class="progress" role="progressbar" aria-label="Budget usage" aria-valuenow="<?=max(0, min(100, $pct))?>" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar <?=$isLimitReached ? 'bg-danger' : ($isWarning ? 'bg-warning' : '')?>" style="width:<?=max(0, min(100, $pct))?>%"></div></div><div class="budget-usage-meta"><small><?=number_format($pct, 1)?>%</small><?php if ($isLimitReached): ?><span class="badge bg-danger">Limit reached</span><?php elseif ($isWarning): ?><span class="badge bg-warning text-dark">Warning</span><?php endif; ?></div></td>
-<td><span class="badge bg-<?=$r['status'] === 'active' ? 'success' : 'secondary'?>"><?=e(ucfirst($r['status']))?></span></td>
+<td class="budget-usage"><div class="progress" role="progressbar" aria-label="Budget usage" aria-valuenow="<?=max(0, min(100, $pct))?>" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar <?=$isLimitReached ? 'bg-danger' : ($isWarning ? 'bg-warning' : '')?>" style="width:<?=max(0, min(100, $pct))?>%"></div></div><div class="budget-usage-meta"><small><?=number_format($pct, 1)?>%</small><?php if ($isLimitReached): ?><span class="status-badge status-badge--danger"><i data-feather="alert-octagon" aria-hidden="true"></i>Limit reached</span><?php elseif ($isWarning): ?><span class="status-badge status-badge--warning"><i data-feather="alert-triangle" aria-hidden="true"></i>Warning</span><?php endif; ?></div></td>
+<td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>
 <td><?php $rowId = $r['id']; $rowName = 'budget'; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('budgets.edit'); $mayDelete = $owned && can('budgets.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
 </tr>
 <?php endforeach; ?>

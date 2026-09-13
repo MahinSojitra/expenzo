@@ -33,6 +33,7 @@ return static function (Router $r): void {
     $r->get('/categories/{id}/appearance', 'App\Controllers\CategoryController@appearance');
     $r->post('/categories/{id}/appearance', 'App\Controllers\CategoryController@saveAppearance');
 
+    $r->get('/audit-logs', 'App\Controllers\AuditLogController@index');
     $r->get('/reports', 'App\Controllers\ReportController@index');
     $r->get('/reports/csv', 'App\Controllers\ReportController@csv');
     $r->get('/settings', 'App\Controllers\SettingsController@index');

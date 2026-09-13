@@ -26,13 +26,13 @@ require dirname(__DIR__).'/partials/form-fields.php';
 <?php if ($system): ?><p class="text-muted mb-0">Only Super Admin can update the permissions of this system role.</p><?php else: ?><p class="text-muted mb-0">Deactivating a role blocks its users on their next request. Reassign those users before deleting it.</p><?php endif; ?>
 </div></div>
 <div class="page-header"><div><h2 class="h4 mb-1">Permissions</h2><p class="text-muted mb-0">Access is limited to the selected actions. Ownership restrictions still apply.</p></div>
-<div class="permission-tools"><button type="button" class="btn btn-sm btn-outline-primary" data-permission-action="all">Select all permissions</button><button type="button" class="btn btn-sm btn-outline-secondary" data-permission-action="none">Clear all</button></div></div>
+<div class="permission-tools"><button type="button" class="action-button action-button--primary btn btn-sm btn-outline-primary" data-permission-action="all"><i data-feather="check-square" aria-hidden="true"></i>Select all permissions</button><button type="button" class="action-button action-button--neutral btn btn-sm btn-outline-secondary" data-permission-action="none"><i data-feather="rotate-ccw" aria-hidden="true"></i>Clear all</button></div></div>
 <div class="row">
 <?php foreach ($groups as $group => $permissions): ?>
 <div class="col-md-6 col-xl-4 mb-3"><fieldset class="card h-100 permission-group" data-permission-group>
 <div class="card-body">
 <legend class="h5"><?=e($moduleLabels[$group] ?? ucwords(str_replace('_',' ',$group)))?></legend>
-<div class="permission-tools mb-3"><button type="button" class="btn btn-sm btn-outline-primary" data-permission-action="group-all">Select all</button><button type="button" class="btn btn-sm btn-outline-secondary" data-permission-action="group-none">Clear all</button></div>
+<div class="permission-tools mb-3"><button type="button" class="action-button action-button--primary btn btn-sm btn-outline-primary" data-permission-action="group-all"><i data-feather="check-square" aria-hidden="true"></i>Select all</button><button type="button" class="action-button action-button--neutral btn btn-sm btn-outline-secondary" data-permission-action="group-none"><i data-feather="rotate-ccw" aria-hidden="true"></i>Clear all</button></div>
 <?php foreach ($permissions as $permission):
 $action = substr($permission['name'], strpos($permission['name'], '.') + 1);
 $label = ucwords(str_replace(['.','_'], ' ', $action));
@@ -46,7 +46,7 @@ $label = ucwords(str_replace(['.','_'], ' ', $action));
 <?php endforeach; ?>
 </div>
 <div class="card"><div class="card-body"><div class="form-actions mt-0 border-0 pt-0">
-<a class="btn btn-outline-secondary" href="<?=e(url('roles'))?>">Cancel</a><button class="btn btn-primary" type="submit"><?=$editing ? 'Update Role' : 'Save Role'?></button>
+<a class="action-button action-button--neutral btn btn-outline-secondary" href="<?=e(url('roles'))?>"><i data-feather="x" aria-hidden="true"></i>Cancel</a><button class="action-button action-button--success btn btn-primary" type="submit"><i data-feather="save" aria-hidden="true"></i><?=$editing ? 'Update Role' : 'Save Role'?></button>
 </div></div></div>
 </form>
 </div>

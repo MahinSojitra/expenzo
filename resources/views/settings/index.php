@@ -33,7 +33,7 @@ $fields = [
 require dirname(__DIR__).'/partials/form-fields.php';
 ?>
 </div>
-<?php if (can('settings.edit')): ?><div class="form-actions"><button class="btn btn-primary" type="submit">Save Settings</button></div><?php endif; ?>
+<?php if (can('settings.edit')): ?><div class="form-actions"><button class="action-button action-button--success btn btn-primary" type="submit"><i data-feather="save" aria-hidden="true"></i>Save Settings</button></div><?php endif; ?>
 </fieldset>
 </form>
 </div></div>

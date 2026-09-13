@@ -1,4 +1,4 @@
-﻿<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-1">Dashboard</h1><p class="text-muted mb-0"><?=!empty($stats['admin'])?'System expense overview.':'Your real-time expense overview.'?></p></div><?php if(can('expenses.create')):?><a href="<?=url('expenses/create')?>" class="btn btn-primary"><i data-feather="plus" class="me-1"></i>Add Expense</a><?php endif;?></div>
+<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-1">Dashboard</h1><p class="text-muted mb-0"><?=!empty($stats['admin'])?'System expense overview.':'Your real-time expense overview.'?></p></div><?php if(can('expenses.create')):?><a href="<?=url('expenses/create')?>" class="action-button action-button--success btn btn-primary"><i data-feather="plus-circle" aria-hidden="true"></i>Add Expense</a><?php endif;?></div>
 <?php if(!empty($stats['admin'])): ?>
 <?php if(!empty($stats['budgetAlerts'])): ?>
 <div class="dashboard-budget-alerts mb-3">

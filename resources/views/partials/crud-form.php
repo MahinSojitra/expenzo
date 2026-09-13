@@ -8,8 +8,8 @@
             <div class="row"><?php require __DIR__.'/form-fields.php'; ?></div>
             <?php if (!empty($formNote)): ?><p class="text-muted"><?=e($formNote)?></p><?php endif; ?>
             <div class="form-actions">
-                <a class="btn btn-outline-secondary" href="<?=e(url($module))?>">Cancel</a>
-                <button type="submit" class="btn btn-primary"><?=e($submitLabel)?></button>
+                <a class="action-button action-button--neutral btn btn-outline-secondary" href="<?=e(url($module))?>"><i data-feather="x" aria-hidden="true"></i>Cancel</a>
+                <button type="submit" class="action-button action-button--success btn btn-primary"><i data-feather="save" aria-hidden="true"></i><?=e($submitLabel)?></button>
             </div>
         </form>
     </div></div>

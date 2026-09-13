@@ -12,6 +12,7 @@ $navigation = [
     'Administration' => [
         'users' => ['Users', 'users', 'users.view'],
         'roles' => ['Roles & Permissions', 'shield', 'roles.view'],
+        'audit-logs' => ['Audit Logs', 'activity', 'audit.view'],
         'settings' => ['Settings', 'settings', 'settings.view'],
     ],
 ];
