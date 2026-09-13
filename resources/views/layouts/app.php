@@ -123,6 +123,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
     <?php require dirname(__DIR__).'/partials/toasts.php'; ?>
     <script src="<?= asset('app.js') ?>"></script>
     <script src="<?= asset('icon-picker.js') ?>"></script>
+    <script src="<?= asset('select-picker.js') ?>"></script>
     <script src="<?= asset('permissions.js') ?>"></script>
     <script src="<?= asset('password-toggle.js') ?>"></script>
     <script src="<?= asset('toasts.js') ?>"></script>

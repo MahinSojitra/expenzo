@@ -11,7 +11,10 @@
     </select>
     <?php elseif ($type === 'select'): ?>
     <select id="<?=e($name)?>" name="<?=e($name)?>" class="form-select <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?> <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
-        <?php foreach ($field['options'] as $optionValue => $label): ?><option value="<?=e($optionValue)?>" <?=selected($value, $optionValue)?>><?=e($label)?></option><?php endforeach; ?>
+        <?php foreach ($field['options'] as $optionValue => $option):
+            $label = is_array($option) ? ($option['label'] ?? $optionValue) : $option;
+            $icon = is_array($option) ? ($option['icon'] ?? null) : null;
+        ?><option value="<?=e($optionValue)?>" <?=$icon ? 'data-icon="'.e($icon).'"' : ''?> <?=selected($value, $optionValue)?>><?=e($label)?></option><?php endforeach; ?>
     </select>
     <?php elseif ($type === 'textarea'): ?>
     <textarea id="<?=e($name)?>" name="<?=e($name)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" rows="4" maxlength="16000" <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>><?=e($value)?></textarea>

@@ -5,10 +5,18 @@ $subtitle = 'Enter your account details below.';
 $formAction = $editing ? $module.'/'.$record['id'].'/update' : $module;
 $submitLabel = $editing ? 'Update Account' : 'Save Account';
 $statusField = ['label' => 'Status', 'type' => 'select', 'options' => ['active' => 'Active', 'inactive' => 'Inactive'], 'default' => 'active', 'required' => true];
-$types = ['Cash', 'Bank', 'Card', 'Credit Card', 'Debit Card', 'UPI', 'Wallet'];
+$types = [
+    'Cash' => ['label' => 'Cash', 'icon' => 'dollar-sign'],
+    'Bank' => ['label' => 'Bank', 'icon' => 'briefcase'],
+    'Card' => ['label' => 'Card', 'icon' => 'credit-card'],
+    'Credit Card' => ['label' => 'Credit Card', 'icon' => 'credit-card'],
+    'Debit Card' => ['label' => 'Debit Card', 'icon' => 'credit-card'],
+    'UPI' => ['label' => 'UPI', 'icon' => 'smartphone'],
+    'Wallet' => ['label' => 'Wallet', 'icon' => 'pocket'],
+];
 $fields = [
     'name' => ['label' => 'Account name', 'required' => true, 'maxlength' => 120],
-    'type' => ['label' => 'Account type', 'type' => 'select', 'options' => array_combine($types, $types), 'required' => true],
+    'type' => ['label' => 'Account type', 'type' => 'select', 'options' => $types, 'required' => true],
 ];
 if (!$editing) $fields['opening_balance'] = ['label' => 'Opening balance', 'type' => 'number', 'step' => '0.01', 'default' => '0', 'required' => true];
 $fields['status'] = $statusField;

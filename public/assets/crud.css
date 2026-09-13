@@ -1,9 +1,16 @@
 html, body { min-height: 100%; overflow-y: auto !important; }
+:root { --ex-control-height: 38px; --ex-control-height-sm: 34px; --ex-control-height-lg: 48px; }
 .wrapper { min-height: 100vh; }
 .main { display: flex; flex-direction: column; min-height: 100vh; }
 .content { flex: 1 0 auto; }
 .footer { flex-shrink: 0; }
 .main, .content, .container-fluid { min-width: 0; }
+.form-control, .form-select, .btn { min-height: var(--ex-control-height); }
+.form-control, .form-select, .btn:not(.btn-sm):not(.btn-lg) { align-items: center; display: inline-flex; }
+.form-control, .form-select { width: 100%; }
+textarea.form-control { display: block; min-height: auto; }
+.form-control-sm, .form-select-sm, .btn-sm { min-height: var(--ex-control-height-sm); }
+.form-control-lg, .form-select-lg, .btn-lg { min-height: var(--ex-control-height-lg); }
 .page-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
 .page-header > div { min-width: 0; }
 .page-header p { overflow-wrap: anywhere; }
@@ -16,7 +23,7 @@ html, body { min-height: 100%; overflow-y: auto !important; }
 .crud-table td, .crud-table th { padding: 1rem .75rem; vertical-align: middle; }
 .table-description { min-width: 180px; max-width: 360px; overflow-wrap: anywhere; }
 .table-actions { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; }
-.table-actions .btn { white-space: nowrap; min-height: 34px; display: inline-flex; align-items: center; }
+.table-actions .btn { white-space: nowrap; min-height: var(--ex-control-height-sm); display: inline-flex; align-items: center; }
 .table-actions form { margin: 0; }
 .table-responsive { max-width: 100%; overscroll-behavior-x: contain; }
 .category-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 38px; min-height: 38px; padding: .4rem .6rem; border-radius: .5rem; color: white; }
@@ -24,7 +31,7 @@ html, body { min-height: 100%; overflow-y: auto !important; }
 .budget-usage { min-width: 150px; }
 .budget-usage .progress { height: 8px; margin-bottom: .35rem; }
 .list-search { display: flex; align-items: flex-end; flex-wrap: wrap; gap: .75rem; max-width: 760px; }
-.form-control[type=color] { min-height: 40px; padding: .35rem; }
+.form-control[type=color] { min-height: var(--ex-control-height); padding: .35rem; }
 .user-menu-toggle { align-items: center; color: #495057; display: inline-flex; gap: .55rem; min-height: 48px; padding-inline: .75rem; }
 .user-menu-toggle:hover, .user-menu-toggle:focus { color: #212529; }
 .user-menu-avatar { align-items: center; background: #eef3fb; border: 1px solid #d9e4f5; border-radius: 50%; color: #3b7ddd; display: inline-flex; flex: 0 0 32px; height: 32px; justify-content: center; width: 32px; }
@@ -40,6 +47,7 @@ html, body { min-height: 100%; overflow-y: auto !important; }
 .user-menu-role { color: #3b7ddd; font-size: .78rem; font-weight: 700; line-height: 1.35; margin-top: .1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .user-menu-dropdown .dropdown-item { align-items: center; display: flex; font-size: .9rem; gap: .25rem; min-height: 38px; }
 .password-toggle .password-toggle-btn { min-width: 4.25rem; }
+.password-toggle .form-control { display: block; }
 .app-toast-container { max-width: min(390px, calc(100vw - 1rem)); z-index: 1090; }
 .app-toast { background: #fff; border: 1px solid #e5e9ef; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgba(33, 37, 41, .18); overflow: hidden; width: min(370px, calc(100vw - 1rem)); }
 .app-toast-content { align-items: flex-start; display: grid; gap: .8rem; grid-template-columns: 2.25rem minmax(0, 1fr) auto; padding: 1rem; }
@@ -74,7 +82,7 @@ html, body { min-height: 100%; overflow-y: auto !important; }
 }
 /* Searchable Feather icon selector. */
 .icon-picker { position: relative; }
-.icon-picker-trigger { display: flex; align-items: center; gap: .65rem; text-align: left; min-height: 42px; width: 100%; }
+.icon-picker-trigger { display: flex; align-items: center; gap: .65rem; text-align: left; min-height: var(--ex-control-height); width: 100%; }
 .icon-picker-trigger > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .icon-picker-picture { display: inline-flex; flex: 0 0 20px; color: #495057; }
 .icon-picker-panel { position: absolute; top: calc(100% + 5px); left: 0; right: 0; z-index: 1050; padding: .65rem; background: #fff; border: 1px solid #ced4da; border-radius: .3rem; box-shadow: 0 6px 20px rgba(33,37,41,.14); }
@@ -89,6 +97,24 @@ html, body { min-height: 100%; overflow-y: auto !important; }
     .icon-picker-trigger, .icon-picker-option, .icon-picker-search { min-height: 44px; }
 }
 .icon-picker > select[hidden] { display: none; }
+
+/* Searchable app select selector. */
+.select-picker { position: relative; }
+.select-picker-trigger { align-items: center; display: flex; gap: .65rem; min-height: var(--ex-control-height); text-align: left; width: 100%; }
+.select-picker-trigger > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select-picker-picture { color: #495057; display: inline-flex; flex: 0 0 20px; }
+.select-picker-panel { background: #fff; border: 1px solid #ced4da; border-radius: .3rem; box-shadow: 0 6px 20px rgba(33,37,41,.14); left: 0; padding: .65rem; position: absolute; right: 0; top: calc(100% + 5px); z-index: 1050; }
+.select-picker-panel[hidden] { display: none; }
+.select-picker-search { margin-bottom: .5rem; width: 100%; }
+.select-picker-options { max-height: min(240px, 40vh); overflow-y: auto; overscroll-behavior: contain; }
+.select-picker-option { align-items: center; border-radius: .2rem; cursor: pointer; display: flex; gap: .75rem; min-height: 42px; overflow-wrap: anywhere; padding: .55rem .65rem; }
+.select-picker-option:hover, .select-picker-option.is-focused { background: #edf3fc; }
+.select-picker-option[aria-selected=true] { background: #e7effb; color: #2465bd; font-weight: 600; }
+.select-picker-empty { margin: .75rem .5rem; }
+.select-picker > select[hidden] { display: none; }
+@media (max-width: 767.98px) {
+    .select-picker-trigger, .select-picker-option, .select-picker-search { min-height: 44px; }
+}
 
 .role-form { max-width: 1200px; margin-inline: auto; }
 .permission-group { min-width: 0; }
