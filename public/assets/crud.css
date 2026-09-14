@@ -80,6 +80,14 @@ body {
     border-radius: var(--ex-radius);
 }
 
+.card,
+.dropdown-menu,
+.modal-content,
+.app-toast,
+.table-responsive {
+    border: 1px solid #e5e9ef;
+}
+
 .card {
     /* Bootstrap already clips header/footer corners; keep overflow visible so
        absolutely-positioned dropdowns (select-picker/icon-picker) aren't clipped. */
@@ -241,6 +249,14 @@ td.text-end .btn-sm {
     overscroll-behavior-x: contain;
 }
 
+.table-responsive>.table {
+    margin-bottom: 0;
+}
+
+.table-responsive>.table>tbody>tr:last-child>* {
+    border-bottom-width: 0;
+}
+
 .category-badge {
     display: inline-flex;
     align-items: center;
@@ -281,6 +297,67 @@ td.text-end .btn-sm {
 .dashboard-budget-alerts {
     display: grid;
     gap: .75rem;
+}
+
+.dashboard-stat-card .card-body {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.dashboard-stat-card .card-body>div:first-child {
+    min-width: 0;
+}
+
+.dashboard-stat-card .text-muted,
+.dashboard-stat-card .stat-value {
+    overflow-wrap: anywhere;
+}
+
+.dashboard-stat-icon {
+    align-items: center;
+    border-radius: var(--ex-radius);
+    display: inline-flex;
+    flex: 0 0 42px;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+}
+
+.dashboard-stat-icon svg {
+    height: 20px;
+    width: 20px;
+}
+
+.dashboard-stat-icon--primary {
+    background: #eaf1ff;
+    color: #2459a6;
+}
+
+.dashboard-stat-icon--success {
+    background: #e5f5ec;
+    color: #146c43;
+}
+
+.dashboard-stat-icon--danger {
+    background: #fcebed;
+    color: #b02a37;
+}
+
+.dashboard-stat-icon--info {
+    background: #e5f6fa;
+    color: #087990;
+}
+
+.dashboard-stat-icon--purple {
+    background: #f1ebfa;
+    color: #6941a5;
+}
+
+.dashboard-stat-icon--warning {
+    background: #fff4d6;
+    color: #875800;
 }
 
 .budget-alert {
@@ -474,7 +551,22 @@ td.text-end .btn-sm {
 }
 
 .password-toggle .password-toggle-btn {
-    min-width: 4.25rem;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    min-width: var(--ex-control-height);
+    padding-inline: .65rem;
+    width: var(--ex-control-height);
+}
+
+.password-toggle .password-toggle-btn.btn-lg {
+    min-width: var(--ex-control-height-lg);
+    width: var(--ex-control-height-lg);
+}
+
+.password-toggle .password-toggle-btn svg {
+    height: 18px;
+    width: 18px;
 }
 
 .password-toggle .form-control {
@@ -1448,6 +1540,10 @@ body.error-page {
     min-width: 0;
 }
 
+.dashboard-chart-sm {
+    height: 260px;
+}
+
 .dashboard-chart-empty {
     min-height: 320px;
     display: flex;
@@ -1457,6 +1553,10 @@ body.error-page {
     gap: 12px;
     color: #667085;
     text-align: center;
+}
+
+.dashboard-chart-empty-sm {
+    min-height: 260px;
 }
 
 .dashboard-chart-empty svg {

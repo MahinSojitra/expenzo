@@ -19,12 +19,18 @@ final class DashboardService
             $month = (float) $pdo->query('SELECT COALESCE(SUM(amount),0) FROM expenses WHERE status="posted" AND DATE_FORMAT(expense_date,"%Y-%m")=DATE_FORMAT(CURDATE(),"%Y-%m")')->fetchColumn();
             $categories = (int) $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn();
             $accounts = (int) $pdo->query('SELECT COUNT(*) FROM accounts')->fetchColumn();
+            $byCategory = $pdo->query('SELECT c.name label,COALESCE(SUM(e.amount),0) value FROM expenses e JOIN categories c ON c.id=e.category_id WHERE e.status="posted" GROUP BY c.id ORDER BY value DESC LIMIT 8')->fetchAll();
+            $monthly = $pdo->query('SELECT DATE_FORMAT(expense_date,"%b") label,ROUND(SUM(amount),2) value FROM expenses WHERE status="posted" AND expense_date>=DATE_SUB(CURDATE(),INTERVAL 11 MONTH) GROUP BY YEAR(expense_date),MONTH(expense_date) ORDER BY YEAR(expense_date),MONTH(expense_date)')->fetchAll();
+            $byUser = $pdo->query('SELECT u.name label,ROUND(COALESCE(SUM(e.amount),0),2) value FROM expenses e JOIN users u ON u.id=e.user_id WHERE e.status="posted" GROUP BY u.id ORDER BY value DESC LIMIT 8')->fetchAll();
+            $byAccountType = $pdo->query('SELECT a.type label,ROUND(COALESCE(SUM(e.amount),0),2) value FROM expenses e JOIN accounts a ON a.id=e.account_id WHERE e.status="posted" GROUP BY a.type ORDER BY value DESC LIMIT 8')->fetchAll();
             $budgetAlerts = [];
 
             return compact('totalUsers', 'activeUsers', 'total', 'month', 'categories', 'accounts') + [
                 'admin' => true,
-                'byCategory' => [],
-                'monthly' => [],
+                'byCategory' => $byCategory,
+                'monthly' => $monthly,
+                'byUser' => $byUser,
+                'byAccountType' => $byAccountType,
                 'budgetAlerts' => $budgetAlerts,
             ];
         }
@@ -55,6 +61,8 @@ final class DashboardService
             'remaining' => $budget - $month,
             'byCategory' => $byCat->fetchAll(),
             'monthly' => $monthly->fetchAll(),
+            'byUser' => [],
+            'byAccountType' => [],
             'budgetAlerts' => $budgetAlerts,
         ];
     }
