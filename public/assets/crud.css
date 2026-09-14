@@ -118,6 +118,113 @@ body {
     letter-spacing: -.02em;
 }
 
+.app-confirm-overlay {
+    align-items: center;
+    background: rgba(16, 24, 40, .46);
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    left: 0;
+    padding: 1rem;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1080;
+}
+
+.app-confirm-overlay.is-open {
+    display: flex;
+}
+
+.app-confirm-open {
+    overflow: hidden;
+}
+
+.app-confirm-dialog {
+    max-width: 520px;
+    width: 100%;
+}
+
+.app-confirm-modal {
+    background: #fff;
+    border: 1px solid #e5e9ef;
+    border-radius: var(--ex-radius);
+    box-shadow: 0 24px 60px rgba(16, 24, 40, .22);
+    overflow: hidden;
+}
+
+.app-confirm-modal .app-confirm-header {
+    align-items: flex-start;
+    border-bottom: 1px solid #eef2f6;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1rem .75rem;
+}
+
+.app-confirm-modal .modal-title-wrap {
+    align-items: flex-start;
+    display: flex;
+    gap: .75rem;
+}
+
+.app-confirm-modal .modal-warning-icon {
+    align-items: center;
+    background: #fff4d7;
+    border: 1px solid #ffe4a3;
+    border-radius: var(--ex-radius);
+    color: #b7791f;
+    display: inline-flex;
+    flex: 0 0 42px;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+}
+
+.app-confirm-modal .modal-warning-icon svg {
+    height: 20px;
+    width: 20px;
+}
+
+.app-confirm-modal .modal-title {
+    color: #101828;
+    font-weight: 700;
+}
+
+.app-confirm-modal .modal-subtitle,
+.app-confirm-modal .confirm-message {
+    color: #667085;
+}
+
+.app-confirm-close {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: var(--ex-radius);
+    color: #667085;
+    display: inline-flex;
+    height: 34px;
+    justify-content: center;
+    padding: 0;
+    width: 34px;
+}
+
+.app-confirm-close:hover {
+    background: #f2f4f7;
+    color: #344054;
+}
+
+.app-confirm-body {
+    padding: 1rem;
+}
+
+.app-confirm-modal .app-confirm-footer {
+    border-top: 1px solid #eef2f6;
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+    padding: .85rem 1rem;
+}
+
 .wrapper {
     min-height: 100vh;
 }

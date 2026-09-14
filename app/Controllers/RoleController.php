@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Core\Request;
+use App\Core\Session;
 use App\Core\View;
 use App\Middleware\PermissionMiddleware;
 use App\Repositories\RoleRepository;
@@ -134,6 +135,9 @@ final class RoleController
             } catch (\PDOException $e) {
                 $errors = $this->persistenceError($e, 'name');
             }
+        }
+        if ($errors) {
+            Session::flash('error', implode(' ', array_values(array_filter($errors))));
         }
         $this->form($record ?? [], $errors);
     }
