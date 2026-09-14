@@ -34,6 +34,90 @@ body {
     --ex-radius: 8px;
 }
 
+.auth-brand {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.auth-brand-mark {
+    align-items: center;
+    background: #e8f1ff;
+    border: 1px solid #cfe0ff;
+    border-radius: 18px;
+    color: #1d5fbf;
+    display: inline-flex;
+    height: 58px;
+    justify-content: center;
+    width: 58px;
+}
+
+.auth-brand-mark svg {
+    height: 28px;
+    width: 28px;
+}
+
+.auth-brand-name {
+    color: #101828;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1;
+}
+
+.auth-brand p {
+    color: #667085;
+    margin: 0;
+    max-width: 380px;
+}
+
+.auth-heading {
+    margin-bottom: 1rem;
+}
+
+.auth-heading .lead {
+    color: #475467;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.auth-card {
+    margin-bottom: 1.5rem;
+}
+
+.app-sidebar-brand {
+    align-items: center;
+    display: flex;
+    gap: .65rem;
+}
+
+.sidebar-brand-mark {
+    align-items: center;
+    background: rgba(59, 125, 221, .16);
+    border: 1px solid rgba(144, 178, 232, .25);
+    border-radius: 10px;
+    color: #8fb9ff;
+    display: inline-flex;
+    flex: 0 0 34px;
+    height: 34px;
+    justify-content: center;
+    width: 34px;
+}
+
+.sidebar-brand-mark svg {
+    height: 18px;
+    width: 18px;
+}
+
+.brand-mini {
+    font-size: 1.18rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+
 .wrapper {
     min-height: 100vh;
 }
