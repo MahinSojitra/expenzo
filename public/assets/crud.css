@@ -1016,6 +1016,49 @@ td.text-end .btn-sm {
     cursor: pointer;
 }
 
+.permission-check {
+    align-items: flex-start;
+    display: flex;
+    gap: .55rem;
+    padding-left: 0;
+}
+
+.permission-check .form-check-input {
+    flex: 0 0 auto;
+    margin-left: 0;
+    margin-top: .18rem;
+}
+
+.permission-check-label {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.permission-check-title,
+.permission-check-description {
+    display: block;
+}
+
+.permission-check-title {
+    color: #344054;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.permission-check-description {
+    color: #667085;
+    font-size: .84rem;
+    line-height: 1.35;
+    margin-top: .15rem;
+}
+
+.permission-check-code {
+    color: #98a2b3;
+    font-size: .82rem;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
 .permission-tools {
     display: flex;
     gap: .5rem;

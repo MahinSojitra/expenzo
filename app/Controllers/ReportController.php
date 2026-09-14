@@ -84,8 +84,18 @@ final class ReportController
     private function ensurePermissions(): void
     {
         $pdo = Database::connection();
-        foreach (['reports.analytics', 'reports.customize', 'reports.export_csv', 'reports.export_visuals'] as $permission) {
+        $reportPermissions = [
+            'reports.analytics' => 'View report summaries, insights and charts.',
+            'reports.customize' => 'Change report breakdowns, chart styles and report filters.',
+            'reports.export_csv' => 'Export filtered expense and insight data as CSV files.',
+            'reports.export_visuals' => 'Export report charts as image files.',
+        ];
+        $hasDescriptionColumn = (bool)$pdo->query("SHOW COLUMNS FROM permissions LIKE 'description'")->fetch();
+        foreach ($reportPermissions as $permission => $description) {
             $pdo->prepare('INSERT IGNORE INTO permissions(name) VALUES(?)')->execute([$permission]);
+            if ($hasDescriptionColumn) {
+                $pdo->prepare('UPDATE permissions SET description=? WHERE name=? AND description=""')->execute([$description, $permission]);
+            }
         }
         $roleId = (int)(auth_user()['role_id'] ?? 0);
         if (!$roleId) return;

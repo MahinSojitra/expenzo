@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $heading = $editing ? 'Edit Role' : 'Add Role';
 $subtitle = 'Choose which pages and actions this role can access.';
 $actionUrl = null;
@@ -38,9 +38,9 @@ require dirname(__DIR__).'/partials/form-fields.php';
 $action = substr($permission['name'], strpos($permission['name'], '.') + 1);
 $label = ucwords(str_replace(['.','_'], ' ', $action));
 ?>
-<div class="form-check mb-3">
+<div class="form-check permission-check mb-3">
 <input class="form-check-input" type="checkbox" name="permissions[]" id="permission-<?=e($permission['id'])?>" value="<?=e($permission['id'])?>" <?=checked(in_array((int)$permission['id'], $selectedPermissions, true))?> <?=$permission['grantable'] ? '' : 'disabled'?>>
-<label class="form-check-label" for="permission-<?=e($permission['id'])?>"><?=e($label)?><small class="d-block text-muted"><?=e($permission['name'])?><?=$permission['grantable'] ? '' : ' · Not assignable by you'?></small></label>
+<label class="form-check-label permission-check-label" for="permission-<?=e($permission['id'])?>"><span class="permission-check-title"><?=e($label)?> <span class="permission-check-code">[<?=e($permission['name'])?>]</span></span><small class="permission-check-description"><?=e($permission['description'] ?? '')?><?=$permission['grantable'] ? '' : ' · Not assignable by you'?></small></label>
 </div>
 <?php endforeach; ?>
 </div></fieldset></div>
@@ -51,3 +51,4 @@ $label = ucwords(str_replace(['.','_'], ' ', $action));
 </div></div></div>
 </form>
 </div>
+
