@@ -3,7 +3,7 @@ $heading = 'Settings';
 $subtitle = 'Configure application preferences.';
 $actionUrl = null;
 $record = $settings;
-$errors = [];
+$errors = $errors ?? [];
 ?>
 <div class="crud-form">
 <?php require dirname(__DIR__).'/partials/page-header.php'; ?>
@@ -27,7 +27,7 @@ require dirname(__DIR__).'/partials/form-fields.php';
 <div class="row">
 <?php
 $fields = [
-    'pagination_size' => ['label' => 'Pagination size', 'type' => 'number', 'default' => 10],
+    'pagination_size' => ['label' => 'Rows per page', 'type' => 'number', 'default' => 10, 'required' => true, 'min' => 1, 'max' => 100, 'step' => 1, 'help' => 'Show 1 to 100 rows per page across all record lists and report details.'],
     'budget_warning_thresholds' => ['label' => 'Budget warning thresholds', 'default' => '75,90,100'],
 ];
 require dirname(__DIR__).'/partials/form-fields.php';

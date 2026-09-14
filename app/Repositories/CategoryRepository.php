@@ -7,18 +7,16 @@ use App\Services\Authorization;
 
 final class CategoryRepository
 {
-    public function allForUser(int $userId, bool $activeOnly = false): array
+    public function allForUser(int $userId, bool $activeOnly = false, ?int $page = null): array
     {
         $sql = 'SELECT c.*,ucs.badge,COALESCE(ucs.icon,c.icon) display_icon,COALESCE(ucs.color,c.color) display_color
             FROM categories c LEFT JOIN user_category_settings ucs ON ucs.category_id=c.id AND ucs.user_id=?
             WHERE (c.owner_id IS NULL OR c.owner_id=?)';
         if ($activeOnly) $sql .= ' AND c.status="active"';
-        $s = Database::connection()->prepare($sql.' ORDER BY c.name');
-        $s->execute([$userId, $userId]);
-        return $s->fetchAll();
+        return \App\Core\Pagination::query($sql.' ORDER BY c.name,c.id', [$userId, $userId], $page);
     }
 
-    public function all(array $filters = []): array
+    public function all(array $filters = [], ?int $page = null): array
     {
         $where = ['1=1'];
         $params = [];
@@ -26,10 +24,8 @@ final class CategoryRepository
         if (($filters['scope'] ?? '') === 'personal') $where[] = 'c.owner_id IS NOT NULL';
         if (!empty($filters['owner_id'])) { $where[] = 'c.owner_id=?'; $params[] = (int)$filters['owner_id']; }
         if (in_array($filters['status'] ?? '', ['active', 'inactive'], true)) { $where[] = 'c.status=?'; $params[] = $filters['status']; }
-        $s = Database::connection()->prepare('SELECT c.*,u.name owner_name,u.email owner_email,NULL badge,c.icon display_icon,c.color display_color
-            FROM categories c LEFT JOIN users u ON u.id=c.owner_id WHERE '.implode(' AND ', $where).' ORDER BY c.name');
-        $s->execute($params);
-        return $s->fetchAll();
+        return \App\Core\Pagination::query('SELECT c.*,u.name owner_name,u.email owner_email,NULL badge,c.icon display_icon,c.color display_color
+            FROM categories c LEFT JOIN users u ON u.id=c.owner_id WHERE '.implode(' AND ', $where).' ORDER BY c.name,c.id', $params, $page);
     }
 
     public function owners(): array

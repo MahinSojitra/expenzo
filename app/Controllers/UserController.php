@@ -18,7 +18,7 @@ final class UserController
     {
         PermissionMiddleware::require('users.view');
         $repo = new UserRepository();
-        $data = $repo->all((string)$r->query('q', ''), max(1, (int)$r->query('page', 1)), 10, auth_user());
+        $data = $repo->all((string)$r->query('q', ''), max(1, (int)$r->query('page', 1)), pagination_size(), auth_user());
         foreach ($data['rows'] as &$row) $row['may_edit'] = Authorization::canManageUser(auth_user(), $repo->findWithRole((int)$row['id']));
         unset($row);
         View::render('users/index', compact('data'));

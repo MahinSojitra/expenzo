@@ -23,5 +23,6 @@ require dirname(__DIR__).'/partials/page-header.php';
 <?php elseif ((int)$role['user_count']): ?><span class="text-muted small">Assigned</span><?php endif; ?>
 </div></td></tr>
 <?php endforeach; ?>
-</tbody></table>
-</div></div></div>
+</tbody></table></div>
+<?php $total = $data['total']; $page = $data['page']; $per = $data['per']; require dirname(__DIR__).'/partials/pagination.php'; ?>
+</div></div>

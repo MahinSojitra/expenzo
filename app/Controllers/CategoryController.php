@@ -27,9 +27,11 @@ final class CategoryController
         PermissionMiddleware::require('categories.view');
         $repo = new CategoryRepository();
         $filters = ['scope' => (string)$r->query('scope', ''), 'owner_id' => (string)$r->query('owner_id', ''), 'status' => (string)$r->query('status', '')];
-        $rows = can('categories.view_all') ? $repo->all($filters) : $repo->allForUser((int)Session::get('user_id'));
+        $page = (int)$r->query('page', 1);
+        $data = can('categories.view_all') ? $repo->all($filters, $page) : $repo->allForUser((int)Session::get('user_id'), false, $page);
+        $rows = $data['rows'];
         $owners = can('categories.view_all') ? $repo->owners() : [];
-        View::render('categories/index', compact('rows', 'filters', 'owners'));
+        View::render('categories/index', compact('rows', 'filters', 'owners', 'data'));
     }
 
     public function create(Request $r): void

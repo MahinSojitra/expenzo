@@ -1920,3 +1920,23 @@ body.error-page {
     font-weight: 500;
     line-height: 1;
 }
+
+/* Shared list pagination, independent of optional template components. */
+.list-pagination { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; border-top:1px solid #e2e8f0; padding-top:20px; margin-top:8px; }
+.list-pagination-summary { margin:0; color:#64748b; font-size:12px; line-height:1.6; }
+.list-pagination-summary strong { color:#334155; font-weight:600; }
+.list-pagination-summary span { white-space:nowrap; }
+.list-pagination .pagination { display:flex; flex-wrap:wrap; align-items:center; gap:6px; list-style:none; padding:0; margin:0; }
+.list-pagination .page-link, .list-pagination .pagination-gap { display:flex; align-items:center; justify-content:center; gap:6px; min-width:34px; min-height:34px; padding:7px 10px; border:1px solid transparent; border-radius:6px; background:#f1ebff; color:#7140b5; font-size:12px; font-weight:500; text-decoration:none; line-height:1.4; }
+.list-pagination .page-link svg { width:15px; height:15px; flex-shrink:0; stroke-width:2; }
+.list-pagination a.page-link:hover { background:#e8dbfc; color:#5b2c94; }
+.list-pagination a.page-link:focus-visible { outline:3px solid #c4a2ed; outline-offset:2px; }
+.list-pagination .active .page-link { background:#e4d3fa; border-color:#c5a3eb; color:#54258c; font-weight:700; }
+.list-pagination .disabled .page-link { background:#f5f7fa; color:#8793a3; cursor:default; }
+.list-pagination .pagination-gap { background:transparent; border-color:transparent; padding:4px 6px; min-width:28px; color:#54258c; font-size:20px; font-weight:700; line-height:1; }
+@media (max-width:575.98px) {
+    .list-pagination { align-items:flex-start; gap:12px; }
+    .list-pagination nav { width:100%; }
+    .list-pagination .pagination { gap:4px; }
+    .list-pagination .page-link { min-width:32px; padding:7px 9px; }
+}

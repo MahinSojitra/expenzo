@@ -41,7 +41,9 @@ final class AuditLogRepository
         $count->execute($params);
 
         $total = (int) $count->fetchColumn();
-        $offset = max(0, ($page - 1) * $per);
+        $per = max(1, min(100, $per));
+        $page = max(1, min($page, max(1, (int)ceil($total / $per))));
+        $offset = ($page - 1) * $per;
 
         $sql = 'SELECT a.*,u.name user_name,u.email user_email
             FROM audit_logs a

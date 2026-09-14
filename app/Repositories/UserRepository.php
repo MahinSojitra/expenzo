@@ -43,6 +43,8 @@ final class UserRepository
         $s = $pdo->prepare('SELECT COUNT(*)'.$joins);
         $s->execute($params);
         $total = (int)$s->fetchColumn();
+        $per = max(1, min(100, $per));
+        $page = max(1, min($page, max(1, (int)ceil($total / $per))));
         $offset = ($page - 1) * $per;
         $s = $pdo->prepare('SELECT u.*,r.id role_id,r.name role_names,r.system_key'.$joins.' ORDER BY u.created_at DESC,u.id DESC LIMIT '.(int)$per.' OFFSET '.(int)$offset);
         $s->execute($params);

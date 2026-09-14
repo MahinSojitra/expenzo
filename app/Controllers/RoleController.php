@@ -17,8 +17,9 @@ final class RoleController
     public function index(Request $r): void
     {
         PermissionMiddleware::require('roles.view');
-        $rows = (new RoleRepository())->all();
-        View::render('roles/index', compact('rows'));
+        $data = (new RoleRepository())->all((int)$r->query('page', 1));
+        $rows = $data['rows'];
+        View::render('roles/index', compact('rows', 'data'));
     }
 
     public function create(Request $r): void

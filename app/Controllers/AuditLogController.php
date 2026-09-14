@@ -25,7 +25,7 @@ final class AuditLogController
 
         $page = max(1, (int) $request->query('page', 1));
         $repository = new AuditLogRepository();
-        $data = $repository->paginate($filters, $page, 15);
+        $data = $repository->paginate($filters, $page, pagination_size());
         $options = $repository->filterOptions();
 
         View::render('audit/index', compact('data', 'filters', 'options'));

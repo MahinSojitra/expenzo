@@ -100,3 +100,9 @@ function display_date(?string $value, bool $withTime = false): string
         return '—';
     }
 }
+
+function pagination_size(): int
+{
+    $size = filter_var(app_setting('pagination_size', 10), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 100]]);
+    return $size === false ? 10 : $size;
+}
