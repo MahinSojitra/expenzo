@@ -6,9 +6,9 @@ use App\Core\Database;
 
 final class RoleRepository
 {
-    public function all(): array
+    public function all(?int $page = null): array
     {
-        return Database::connection()->query('SELECT r.*,(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id=r.id) user_count FROM roles r ORDER BY r.is_system DESC,r.name')->fetchAll();
+        return \App\Core\Pagination::query('SELECT r.*,(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id=r.id) user_count FROM roles r ORDER BY r.is_system DESC,r.name,r.id', [], $page);
     }
 
     public function find(int $id): ?array

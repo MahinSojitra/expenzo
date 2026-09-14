@@ -17,8 +17,9 @@ final class BudgetController
     public function index(Request $r): void
     {
         PermissionMiddleware::require('budgets.view');
-        $rows = (new BudgetRepository())->allVisible(auth_user());
-        View::render('budgets/index', compact('rows'));
+        $data = (new BudgetRepository())->allVisible(auth_user(), (int)$r->query('page', 1));
+        $rows = $data['rows'];
+        View::render('budgets/index', compact('rows', 'data'));
     }
 
     public function create(Request $r): void

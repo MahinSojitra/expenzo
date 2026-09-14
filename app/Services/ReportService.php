@@ -7,7 +7,7 @@ use App\Core\Database;
 
 final class ReportService
 {
-    public function expenses(array $filters, array $actor): array
+    public function expenses(array $filters, array $actor, ?int $page = null): array
     {
         [$where, $params] = $this->conditions($filters, $actor);
         $sql = 'SELECT e.expense_date,e.amount,c.name category,ucs.badge,
@@ -20,9 +20,7 @@ final class ReportService
             LEFT JOIN user_category_settings ucs ON ucs.user_id=e.user_id AND ucs.category_id=e.category_id
             WHERE '.implode(' AND ', $where).'
             ORDER BY e.expense_date DESC,e.id DESC';
-        $statement = Database::connection()->prepare($sql);
-        $statement->execute($params);
-        return $statement->fetchAll();
+        return \App\Core\Pagination::query($sql, $params, $page);
     }
 
     public function analytics(array $filters, array $actor): array

@@ -21,4 +21,6 @@ require dirname(__DIR__).'/partials/page-header.php';
 <td><?php $rowId = $r['id']; $rowName = $r['name']; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('accounts.edit'); $mayDelete = $owned && can('accounts.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
 </tr>
 <?php endforeach; ?>
-</tbody></table></div></div></div>
+</tbody></table></div>
+<?php $total = $data['total']; $page = $data['page']; $per = $data['per']; require dirname(__DIR__).'/partials/pagination.php'; ?>
+</div></div>

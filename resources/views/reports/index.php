@@ -1,6 +1,6 @@
 <?php
 $filters = $filters ?? ($f ?? []);
-$summary = $analytics['summary'] ?? ['total' => 0, 'count' => count($rows), 'average' => 0, 'highest' => 0];
+$summary = $analytics['summary'] ?? ['total' => 0, 'count' => $data['total'], 'average' => 0, 'highest' => 0];
 $query = http_build_query($filters);
 $canAnalytics = can('reports.analytics');
 $canCustomize = can('reports.customize');
@@ -54,8 +54,9 @@ $breakdownTitle = match ($primaryBreakdown) {
 <?php if(!empty($analytics['insights'])): ?><div class="card"><div class="card-body"><h5 class="card-title">Key insights</h5><div class="report-insights"><?php foreach($analytics['insights'] as $insight): ?><div class="report-insight"><span class="report-insight-icon"><i data-feather="zap" aria-hidden="true"></i></span><div><strong><?=e($insight['label'])?></strong><span class="report-insight-value"><?=e($insight['value'])?></span></div></div><?php endforeach; ?></div></div></div><?php endif; ?>
 <?php endif; ?>
 <div class="card"><div class="card-body">
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><h5 class="card-title mb-0">Expense details</h5><span class="text-muted small"><?=e(number_format(count($rows)))?> matching rows</span></div>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><h5 class="card-title mb-0">Expense details</h5><span class="text-muted small"><?=e(number_format($data['total']))?> matching rows</span></div>
 <div class="table-responsive"><table class="table"><thead><tr><th>Date</th><th>Amount</th><th>Category</th><th>Account</th><?php if(can('finance.view_all')):?><th>User</th><?php endif; ?><th>Description</th></tr></thead><tbody><?php foreach($rows as $row):?><tr><td><?=e(display_date($row['expense_date']))?></td><td class="fw-semibold"><?=money($row['amount'])?></td><td><?=category_label($row['category'] ?? '', $row['category_icon'] ?? null, $row['category_color'] ?? null, $row['badge'] ?? null)?></td><td><?=account_type_label($row['account_type'] ?? '', $row['account'] ?? null)?></td><?php if(can('finance.view_all')):?><td><?=e($row['user_name'] ?? '')?></td><?php endif; ?><td><?=e($row['description'])?></td></tr><?php endforeach;?><?php if(!$rows):?><tr><td colspan="<?=can('finance.view_all') ? 6 : 5?>" class="text-center text-muted py-5"><i data-feather="inbox" aria-hidden="true"></i><p class="mb-0">No expenses match these filters.</p></td></tr><?php endif;?></tbody></table></div>
+<?php $total = $data['total']; $page = $data['page']; $per = $data['per']; require dirname(__DIR__).'/partials/pagination.php'; ?>
 </div></div>
 <?php if($canAnalytics): ob_start(); ?>
 <script>

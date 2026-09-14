@@ -22,12 +22,13 @@ final class ReportController
         $this->ensurePermissions();
         $filters = $request->all();
         $service = new ReportService();
-        $rows = $service->expenses($filters, auth_user());
+        $data = $service->expenses($filters, auth_user(), (int)$request->query('page', 1));
+        $rows = $data['rows'];
         $analytics = $this->canUse('reports.analytics') ? $service->analytics($filters, auth_user()) : [];
         $categories = can('categories.view_all') ? (new CategoryRepository())->all(['status' => 'active']) : (new CategoryRepository())->allForUser((int)auth_user()['id'], true);
         $accounts = (new AccountRepository())->allVisible(auth_user());
         $users = can('finance.view_all') ? (new UserRepository())->all('', 1, 1000, auth_user())['rows'] : [];
-        View::render('reports/index', compact('rows', 'filters', 'categories', 'accounts', 'users', 'analytics'));
+        View::render('reports/index', compact('rows', 'filters', 'categories', 'accounts', 'users', 'analytics', 'data'));
     }
 
     public function csv(Request $request): void

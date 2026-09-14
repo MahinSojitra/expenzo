@@ -18,7 +18,7 @@ $fields = [
     'name' => ['label' => 'Account name', 'required' => true, 'maxlength' => 120],
     'type' => ['label' => 'Account type', 'type' => 'select', 'options' => $types, 'required' => true],
 ];
-if (!$editing) $fields['opening_balance'] = ['label' => 'Opening balance', 'type' => 'number', 'step' => '0.01', 'default' => '0', 'required' => true];
+if (!$editing) $fields['opening_balance'] = ['label' => 'Opening balance', 'type' => 'number', 'min' => '0', 'max' => '9999999999999.99', 'step' => '0.01', 'help' => 'Enter zero or a positive balance. Negative opening balances are not allowed.', 'default' => '0', 'required' => true];
 $fields['status'] = $statusField;
 $fields['description'] = ['label' => 'Description', 'type' => 'textarea', 'wide' => true];
 $formNote = $editing ? 'Opening balance: ' . money($record['opening_balance']) . '. Opening and current balances are preserved when you edit account details.' : 'This account will belong to you.';

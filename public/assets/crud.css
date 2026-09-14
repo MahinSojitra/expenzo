@@ -1920,3 +1920,83 @@ body.error-page {
     font-weight: 500;
     line-height: 1;
 }
+
+/* Shared list pagination, independent of optional template components. */
+.list-pagination { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; border-top:1px solid #e2e8f0; padding-top:20px; margin-top:8px; }
+.list-pagination-summary { margin:0; color:#64748b; font-size:12px; line-height:1.6; }
+.list-pagination-summary strong { color:#334155; font-weight:600; }
+.list-pagination-summary span { white-space:nowrap; }
+.list-pagination .pagination { display:flex; flex-wrap:wrap; align-items:center; gap:6px; list-style:none; padding:0; margin:0; }
+.list-pagination .page-link, .list-pagination .pagination-gap { display:flex; align-items:center; justify-content:center; gap:6px; min-width:34px; min-height:34px; padding:7px 10px; border:1px solid transparent; border-radius:6px; background:#f1ebff; color:#7140b5; font-size:12px; font-weight:500; text-decoration:none; line-height:1.4; }
+.list-pagination .page-link svg { width:15px; height:15px; flex-shrink:0; stroke-width:2; }
+.list-pagination a.page-link:hover { background:#e8dbfc; color:#5b2c94; }
+.list-pagination a.page-link:focus-visible { outline:3px solid #c4a2ed; outline-offset:2px; }
+.list-pagination .active .page-link { background:#e4d3fa; border-color:#c5a3eb; color:#54258c; font-weight:700; }
+.list-pagination .disabled .page-link { background:#f5f7fa; color:#8793a3; cursor:default; }
+.list-pagination .pagination-gap { background:transparent; border-color:transparent; padding:4px 6px; min-width:28px; color:#54258c; font-size:20px; font-weight:700; line-height:1; }
+@media (max-width:575.98px) {
+    .list-pagination { align-items:flex-start; gap:12px; }
+    .list-pagination nav { width:100%; }
+    .list-pagination .pagination { gap:4px; }
+    .list-pagination .page-link { min-width:32px; padding:7px 9px; }
+}
+
+/* Expense details */
+.expense-details { max-width:1200px; margin:0 auto; }
+.expense-detail-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.expense-details .card-body { padding:24px; }
+.expense-overview { display:grid; grid-template-columns:1.3fr 1fr .7fr; align-items:center; gap:24px; padding:24px; border:1px solid #e4eaf3; border-radius:8px; background:#f7f9fd; }
+.expense-amount { display:flex; align-items:center; gap:14px; min-width:0; }
+.expense-detail-icon { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:44px; height:44px; border-radius:10px; background:#e9f0ff; color:#245cba; }
+.expense-detail-icon svg { width:22px; height:22px; }
+.expense-detail-label { display:flex; align-items:center; gap:6px; color:#64748b; font-size:12px; margin-bottom:7px; }
+.expense-detail-label svg, .expense-person svg { width:15px; height:15px; flex-shrink:0; }
+.expense-amount-value { font-size:28px; font-weight:700; line-height:1.25; color:#25364e; overflow-wrap:anywhere; }
+.expense-overview-item strong { font-size:14px; color:#334155; }
+.expense-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 32px; margin-top:8px; }
+.expense-detail-section { padding:24px 0; min-width:0; border-bottom:1px solid #edf0f5; }
+.expense-detail-section h2 { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; color:#334155; margin:0 0 18px; }
+.expense-detail-section h2 svg { width:17px; height:17px; color:#6480a6; flex-shrink:0; }
+.expense-payment-fields { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:0; }
+.expense-payment-fields dt { color:#64748b; font-size:12px; font-weight:400; margin-bottom:8px; }
+.expense-payment-fields dd { margin:0; color:#334155; overflow-wrap:anywhere; }
+.expense-person { display:flex; align-items:center; gap:7px; }
+.expense-detail-copy { margin:0; color:#334155; line-height:1.75; overflow-wrap:anywhere; }
+.expense-detail-empty { margin:0; color:#64748b; font-size:13px; }
+.expense-receipt { display:flex; align-items:center; flex-wrap:wrap; gap:12px; background:#f8fafc; border:1px solid #e4eaf3; border-radius:8px; padding:14px; }
+.expense-receipt-info { display:flex; flex-direction:column; gap:4px; flex:1; }
+.expense-receipt-info strong { color:#334155; font-size:13px; }
+.expense-receipt-info span { color:#64748b; font-size:12px; }
+.expense-detail-footer { padding-top:20px; display:flex; justify-content:flex-end; }
+@media (max-width:767.98px) {
+    .expense-overview { grid-template-columns:1fr 1fr; gap:20px; padding:18px; }
+    .expense-amount { grid-column:1 / -1; }
+    .expense-detail-grid { grid-template-columns:1fr; }
+    .expense-details .card-body { padding:18px; }
+    .expense-detail-actions { width:100%; }
+}
+@media (max-width:375px) {
+    .expense-payment-fields { grid-template-columns:1fr; }
+    .expense-amount-value { font-size:24px; }
+}
+
+/* Settings section hierarchy */
+.settings-page .settings-section { border:1px solid #e1e7f0; border-radius:9px; margin-bottom:22px; }
+.settings-section-header { display:flex; align-items:center; gap:12px; padding:16px 20px; background:#f5f7fc; border-bottom:1px solid #e1e7f0; border-radius:9px 9px 0 0; }
+.settings-section-icon { display:flex; align-items:center; justify-content:center; width:38px; height:38px; flex-shrink:0; background:#e8efff; color:#315da5; border-radius:8px; }
+.settings-section-icon svg { width:20px; height:20px; }
+.settings-section-header h2 { margin:0 0 4px; color:#27364d; font-size:16px; font-weight:700; line-height:1.4; }
+.settings-section-header p { margin:0; color:#64748b; font-size:12px; line-height:1.5; }
+.settings-section--alerts .settings-section-header { background:#f8f5fc; }
+.settings-section--alerts .settings-section-icon { background:#ede5fa; color:#7140b5; }
+.settings-section-fields { padding:20px 20px 4px; }
+.settings-page .form-label { font-weight:500; color:#40516a; }
+.settings-page .form-actions { margin-top:0; padding-top:0; border-top:0; }
+@media (max-width:575.98px) {
+    .settings-section-header { padding:14px; align-items:flex-start; }
+    .settings-section-fields { padding:16px 14px 0; }
+}
+
+.select-picker-option[aria-disabled="true"],
+.select-picker-option[aria-disabled="true"]:hover,
+.select-picker-option[aria-disabled="true"].is-focused { color:#8793a3; background:#f5f7fa; cursor:not-allowed; }

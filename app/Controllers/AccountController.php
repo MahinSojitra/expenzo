@@ -16,8 +16,9 @@ final class AccountController
     public function index(Request $r): void
     {
         PermissionMiddleware::require('accounts.view');
-        $rows = (new AccountRepository())->allVisible(auth_user());
-        View::render('accounts/index', compact('rows'));
+        $data = (new AccountRepository())->allVisible(auth_user(), (int)$r->query('page', 1));
+        $rows = $data['rows'];
+        View::render('accounts/index', compact('rows', 'data'));
     }
 
     public function create(Request $r): void

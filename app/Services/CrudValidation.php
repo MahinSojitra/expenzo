@@ -37,8 +37,9 @@ final class CrudValidation
             if (!in_array($data['type'] ?? '', ['Cash', 'Bank', 'Card', 'Credit Card', 'Debit Card', 'UPI', 'Wallet'], true)) {
                 $errors['type'] = 'Choose a valid account type.';
             }
-            if (!$editing && (!is_numeric($data['opening_balance'] ?? '') || abs((float)$data['opening_balance']) > 9999999999999.99)) {
-                $errors['opening_balance'] = 'Enter a valid opening balance.';
+            if (!$editing) {
+                try { Amount::cents($data['opening_balance'] ?? null, 'opening_balance', true); }
+                catch (FieldValidationException $e) { $errors['opening_balance'] = $e->getMessage(); }
             }
         }
         if ($module === 'budgets') {

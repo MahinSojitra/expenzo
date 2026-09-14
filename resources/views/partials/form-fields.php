@@ -26,9 +26,11 @@
             <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
     </div>
     <?php else: ?>
+    <?php if (isset($field['prefix'])): ?><div class="input-group amount-input-group"><span class="input-group-text" aria-hidden="true"><?=e($field['prefix'])?></span><?php endif; ?>
     <input id="<?=e($name)?>" name="<?=e($name)?>" type="<?=e($type)?>" value="<?=e($value)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?> <?=$type === 'password' ? 'data-password-toggle' : ''?>
         <?php foreach (['min', 'max', 'step', 'maxlength', 'minlength', 'autocomplete'] as $attr): if (isset($field[$attr])): ?> <?=e($attr)?>="<?=e($field[$attr])?>"<?php endif; endforeach; ?>
         <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
+    <?php if (isset($field['prefix'])): ?></div><?php endif; ?>
     <?php endif; ?>
     <?php if ($error): ?><div id="<?=e($name)?>-error" class="invalid-feedback d-block"><?=e($error)?></div><?php endif; ?>
     <?php if (!empty($field['help'])): ?><div class="form-text"><?=e($field['help'])?></div><?php endif; ?>
