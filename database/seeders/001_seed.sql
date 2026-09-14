@@ -12,7 +12,7 @@ INSERT INTO permissions(name) VALUES
 ('categories.badge.view'),('categories.badge.edit'),
 ('accounts.view'),('accounts.create'),('accounts.edit'),('accounts.delete'),
 ('budgets.view'),('budgets.create'),('budgets.edit'),('budgets.delete'),
-('reports.view'),('reports.export'),
+('reports.view'),('reports.analytics'),('reports.customize'),('reports.export'),('reports.export_csv'),('reports.export_visuals'),
 ('users.view'),('users.create'),('users.edit'),('users.delete'),('users.assign_role'),
 ('roles.view'),('roles.create'),('roles.edit'),('roles.delete'),
 ('permissions.view'),('permissions.manage'),
@@ -35,7 +35,7 @@ SELECT r.id,p.id FROM roles r JOIN permissions p ON p.name IN (
 'dashboard.view','expenses.view','expenses.create','expenses.edit','expenses.delete',
 'categories.view','categories.create','categories.edit','categories.delete','categories.customize','categories.badge.view','categories.badge.edit',
 'accounts.view','accounts.create','accounts.edit','accounts.delete',
-'budgets.view','budgets.create','budgets.edit','budgets.delete','reports.view','reports.export'
+'budgets.view','budgets.create','budgets.edit','budgets.delete','reports.view','reports.analytics','reports.customize','reports.export','reports.export_csv','reports.export_visuals'
 ) WHERE r.name='User';
 
 INSERT INTO categories(name,description,icon,color,status,created_at,updated_at) VALUES

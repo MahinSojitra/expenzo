@@ -1570,6 +1570,102 @@ body.error-page {
     font-size: 14px;
 }
 
+.report-panel {
+    margin-bottom: 1.25rem;
+}
+
+.report-filters {
+    align-items: end;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.report-filters>div {
+    min-width: 0;
+}
+
+.report-filter-actions,
+.report-card-header {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem;
+    justify-content: space-between;
+}
+
+.report-filter-actions {
+    justify-content: flex-start;
+}
+
+.report-summary {
+    margin-bottom: .5rem;
+}
+
+.report-insights {
+    display: grid;
+    gap: .75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report-insight {
+    align-items: center;
+    border: 1px solid #e5e9ef;
+    border-radius: var(--ex-radius);
+    display: flex;
+    gap: .85rem;
+    min-height: 72px;
+    padding: .85rem;
+}
+
+.report-insight-icon {
+    align-items: center;
+    align-self: center;
+    background: #e5f5ec;
+    border-radius: var(--ex-radius);
+    color: #146c43;
+    display: inline-flex;
+    flex: 0 0 40px;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
+}
+
+.report-insight-icon svg {
+    height: 18px;
+    width: 18px;
+}
+
+.report-insight > div {
+    min-width: 0;
+}
+
+.report-insight strong {
+    display: block;
+    line-height: 1.25;
+    margin-bottom: .2rem;
+}
+
+.report-insight-value {
+    color: #667085;
+    display: block;
+    font-size: .9rem;
+    line-height: 1.35;
+}
+
+@media (max-width: 1199.98px) {
+    .report-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .report-filters,
+    .report-insights {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 @media (max-width:575.98px) {
     .dashboard-chart {
         height: 280px;
