@@ -41,7 +41,7 @@ final class ExpenseController
             (new ExpenseService())->create($d, auth_user());
         } catch (\DomainException | \InvalidArgumentException | \RuntimeException $e) {
             http_response_code(422);
-            View::render('expenses/form', $this->common(['expense' => null, 'mode' => 'create', 'error' => $e->getMessage()]));
+            View::render('expenses/form', $this->common(['expense' => null, 'mode' => 'create', 'error' => $e->getMessage(), 'errors' => $e instanceof \App\Services\FieldValidationException ? [$e->field => $e->getMessage()] : []]));
             return;
         }
         Session::flash('success', 'Expense created successfully.');
@@ -98,7 +98,7 @@ final class ExpenseController
             (new ExpenseService())->update((int) $id, $d, auth_user());
         } catch (\DomainException | \InvalidArgumentException | \RuntimeException $e) {
             http_response_code(422);
-            View::render('expenses/form', $this->common(['expense' => $expense, 'mode' => 'edit', 'error' => $e->getMessage()]));
+            View::render('expenses/form', $this->common(['expense' => $expense, 'mode' => 'edit', 'error' => $e->getMessage(), 'errors' => $e instanceof \App\Services\FieldValidationException ? [$e->field => $e->getMessage()] : []]));
             return;
         }
         Session::flash('success', 'Expense updated successfully.');
@@ -109,7 +109,12 @@ final class ExpenseController
         PermissionMiddleware::require('expenses.delete');
         verify_csrf();
         $this->missing((new ExpenseRepository())->findOwned((int) $id, (int) Session::get('user_id')));
-        (new ExpenseService())->delete((int) $id, auth_user());
+        try {
+            (new ExpenseService())->delete((int) $id, auth_user());
+        } catch (\DomainException | \RuntimeException $e) {
+            Session::flash('error', $e->getMessage());
+            Response::redirect('/expenses/' . $id);
+        }
         Session::flash('success', 'Expense deleted.');
         Response::redirect('/expenses');
     }
@@ -117,8 +122,8 @@ final class ExpenseController
     {
         $status = (string) $r->input('status', 'posted');
         if (!in_array($status, ['draft', 'posted', 'void'], true))
-            $status = 'posted';
-        $d = ['amount' => round((float) $r->input('amount'), 2), 'expense_date' => (string) $r->input('expense_date'), 'category_id' => (int) $r->input('category_id'), 'account_id' => (int) $r->input('account_id'), 'description' => trim((string) $r->input('description')), 'notes' => trim((string) $r->input('notes')), 'status' => $status];
+            throw new \App\Services\FieldValidationException('status', 'Choose a valid expense status.');
+        $d = ['amount' => \App\Services\Amount::decimal(\App\Services\Amount::cents($r->input('amount'))), 'expense_date' => (string) $r->input('expense_date'), 'category_id' => (int) $r->input('category_id'), 'account_id' => (int) $r->input('account_id'), 'description' => trim((string) $r->input('description')), 'notes' => trim((string) $r->input('notes')), 'status' => $status];
         if ($d['amount'] <= 0 || $d['expense_date'] === '' || $d['category_id'] <= 0 || $d['account_id'] <= 0 || $d['description'] === '')
             throw new \InvalidArgumentException('Please provide all required expense fields.');
         return $d;

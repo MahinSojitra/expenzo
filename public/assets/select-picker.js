@@ -129,7 +129,7 @@
         let results = [];
 
         function options() {
-            return [...select.options].filter(option => !option.disabled);
+            return [...select.options].filter(option => select.hasAttribute('data-show-disabled-options') || !option.disabled);
         }
 
         function preview(container, option) {
@@ -168,13 +168,15 @@
                 item.className = 'select-picker-option';
                 item.setAttribute('role', 'option');
                 item.setAttribute('aria-selected', String(option.value === select.value));
+                item.setAttribute('aria-disabled', String(option.disabled));
                 preview(item, option);
                 item.addEventListener('mousedown', event => event.preventDefault());
                 item.addEventListener('click', () => choose(option));
                 list.append(item);
             });
             empty.hidden = results.length > 0;
-            highlight(results.length ? Math.max(0, results.findIndex(option => option.value === select.value)) : -1);
+            const selected = results.findIndex(option => option.value === select.value && !option.disabled);
+            highlight(selected >= 0 ? selected : results.findIndex(option => !option.disabled));
         }
 
         function close(restoreFocus = false) {
@@ -195,6 +197,7 @@
         }
 
         function choose(option) {
+            if (option.disabled) return;
             select.value = option.value;
             preview(trigger, option);
             select.dispatchEvent(new Event('change', {bubbles: true}));
@@ -212,7 +215,13 @@
         search.addEventListener('keydown', event => {
             if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
                 event.preventDefault();
-                if (results.length) highlight((active + (event.key === 'ArrowDown' ? 1 : -1) + results.length) % results.length);
+                if (results.length) {
+                    const step = event.key === 'ArrowDown' ? 1 : -1;
+                    for (let i = 1; i <= results.length; i++) {
+                        const next = (active + step * i + results.length * 2) % results.length;
+                        if (!results[next].disabled) { highlight(next); break; }
+                    }
+                }
             } else if (event.key === 'Enter') {
                 event.preventDefault();
                 if (results[active]) choose(results[active]);
@@ -229,9 +238,23 @@
         wrapper.addEventListener('focusout', event => {
             if (!wrapper.contains(event.relatedTarget)) close();
         });
-        select.addEventListener('change', () => preview(trigger, selectedOption()));
+        function sync() {
+            preview(trigger, selectedOption());
+            trigger.disabled = select.matches(':disabled');
+            trigger.classList.toggle('is-invalid', select.classList.contains('is-invalid'));
+            trigger.setAttribute('aria-invalid', select.getAttribute('aria-invalid') || 'false');
+            if (!panel.hidden) render();
+        }
+        select.addEventListener('change', sync);
+        select.addEventListener('select-picker:refresh', sync);
+        select.addEventListener('invalid', event => {
+            event.preventDefault();
+            trigger.classList.add('is-invalid');
+            trigger.setAttribute('aria-invalid', 'true');
+            trigger.focus();
+        });
         select.form?.addEventListener('reset', () => setTimeout(() => { preview(trigger, selectedOption()); close(); }, 0));
-        preview(trigger, selectedOption());
+        sync();
     }
 
     function init() {

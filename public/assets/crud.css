@@ -1996,3 +1996,7 @@ body.error-page {
     .settings-section-header { padding:14px; align-items:flex-start; }
     .settings-section-fields { padding:16px 14px 0; }
 }
+
+.select-picker-option[aria-disabled="true"],
+.select-picker-option[aria-disabled="true"]:hover,
+.select-picker-option[aria-disabled="true"].is-focused { color:#8793a3; background:#f5f7fa; cursor:not-allowed; }

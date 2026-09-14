@@ -121,6 +121,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
     <script src="<?= asset('app.js') ?>"></script>
     <script src="<?= asset('icon-picker.js') ?>"></script>
     <script src="<?= asset('select-picker.js') ?>"></script>
+    <script src="<?= asset('expense-balance.js') ?>"></script>
     <script src="<?= asset('permissions.js') ?>"></script>
     <script src="<?= asset('password-toggle.js') ?>"></script>
     <script src="<?= asset('file-input.js') ?>"></script>
