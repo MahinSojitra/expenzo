@@ -5,13 +5,13 @@
         const fieldName = form.dataset.confirmStatusField;
         const targetValue = form.dataset.confirmStatusValue;
         if (!fieldName || !targetValue) return formLooksLikeInactiveEdit(form);
-        const field = form.elements[fieldName];
-        return field && String(field.value) === targetValue;
+        const value = new FormData(form).get(fieldName);
+        return String(value || '') === targetValue;
     }
 
     function formLooksLikeInactiveEdit(form) {
-        const status = form.elements.status;
-        if (!status || String(status.value) !== 'inactive') return false;
+        const status = new FormData(form).get('status');
+        if (String(status || '') !== 'inactive') return false;
         return /\/(users|roles)\//.test(form.action) && /\/update(?:$|[?#])/.test(form.action);
     }
 

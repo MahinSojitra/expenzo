@@ -9,7 +9,7 @@ $moduleLabels = ['dashboard'=>'Dashboard','expenses'=>'Expenses','categories'=>'
 ?>
 <div class="role-form">
 <?php require dirname(__DIR__).'/partials/page-header.php'; ?>
-<form method="post" action="<?=e(url($editing ? 'roles/'.$record['id'].'/update' : 'roles'))?>" data-permissions-form <?php if ($editing && (($record['status'] ?? '') === 'active')): ?>data-confirm-status-field="status" data-confirm-status-value="inactive" data-confirm-title="Deactivate Role" data-confirm-subtitle="Users assigned to this role will lose access." data-confirm-message="Deactivating this role blocks assigned users on their next request until they are moved to an active role or this role is reactivated. Existing records and audit history stay saved." data-confirm-button="Deactivate Role"<?php endif; ?>>
+<form method="post" action="<?=e(url($editing ? 'roles/'.$record['id'].'/update' : 'roles'))?>" data-permissions-form <?php if ($editing): ?>data-confirm-status-field="status" data-confirm-status-value="inactive" data-confirm-title="Deactivate Role" data-confirm-subtitle="Users assigned to this role will lose access." data-confirm-message="Deactivating this role blocks assigned users on their next request until they are moved to an active role or this role is reactivated. Existing records and audit history stay saved." data-confirm-button="Deactivate Role"<?php endif; ?>>
 <?=csrf_field()?>
 <div class="card"><div class="card-body">
 <?php if ($system): ?><p class="alert alert-info">This is a system role. Its name and active status are protected.</p><?php endif; ?>
