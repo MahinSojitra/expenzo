@@ -36,6 +36,8 @@ return static function (Router $r): void {
     $r->get('/audit-logs', 'App\Controllers\AuditLogController@index');
     $r->get('/reports', 'App\Controllers\ReportController@index');
     $r->get('/reports/csv', 'App\Controllers\ReportController@csv');
+    $r->get('/reports/insights.csv', 'App\Controllers\ReportController@insightsCsv');
+    $r->get('/reports/chart-data', 'App\Controllers\ReportController@chart');
     $r->get('/settings', 'App\Controllers\SettingsController@index');
     $r->post('/settings', 'App\Controllers\SettingsController@save');
 };

@@ -18,7 +18,7 @@ require dirname(__DIR__).'/partials/page-header.php';
 <td><?=e($role['user_count'])?></td><td><div class="table-actions">
 <?php if (can('roles.edit') && can('permissions.manage') && $manageable): ?><a class="action-button action-button--primary btn btn-sm btn-outline-primary" href="<?=e(url('roles/'.$role['id'].'/edit'))?>"><i data-feather="edit-3" aria-hidden="true"></i>Edit<span class="visually-hidden"> <?=e($role['name'])?></span></a><?php endif; ?>
 <?php if (can('roles.delete') && $manageable && !$role['is_system'] && !(int)$role['user_count']): ?>
-<form method="post" action="<?=e(url('roles/'.$role['id'].'/delete'))?>" onsubmit="return confirm('Delete this role? This cannot be undone.');"><?=csrf_field()?><button class="action-button action-button--danger btn btn-sm btn-outline-danger"><i data-feather="trash-2" aria-hidden="true"></i>Delete<span class="visually-hidden"> <?=e($role['name'])?></span></button></form>
+<form method="post" action="<?=e(url('roles/'.$role['id'].'/delete'))?>" data-confirm-title="Delete Role" data-confirm-subtitle="This action cannot be undone." data-confirm-message="Deleting <?=e($role['name'])?> permanently removes the role. This is only allowed when no users are assigned to it." data-confirm-button="Delete Role"><?=csrf_field()?><button class="action-button action-button--danger btn btn-sm btn-outline-danger"><i data-feather="trash-2" aria-hidden="true"></i>Delete<span class="visually-hidden"> <?=e($role['name'])?></span></button></form>
 <?php elseif ($role['is_system']): ?><span class="text-muted small">Protected</span>
 <?php elseif ((int)$role['user_count']): ?><span class="text-muted small">Assigned</span><?php endif; ?>
 </div></td></tr>

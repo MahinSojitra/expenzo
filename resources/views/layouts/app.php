@@ -30,10 +30,6 @@ $currentUserEmail = $currentUser['email'] ?? '';
     <link href="<?= asset('app.css') ?>" rel="stylesheet">
     <link href="<?= asset('crud.css') ?>" rel="stylesheet">
     <style>
-        .brand-mini {
-            font-weight: 700
-        }
-
         .table td,
         .table th {
             vertical-align: middle
@@ -55,8 +51,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
     <div class="wrapper">
         <nav id="sidebar" class="sidebar js-sidebar">
             <div class="sidebar-content js-simplebar">
-                <a class="sidebar-brand" href="<?= e(url(landing_path())) ?>"><span
-                        class="align-middle brand-mini"><?= e(APP_NAME) ?></span></a>
+                <a class="sidebar-brand app-sidebar-brand" href="<?= e(url(landing_path())) ?>"><span class="sidebar-brand-mark"><i data-feather="trending-up" aria-hidden="true"></i></span><span class="align-middle brand-mini"><?= e(APP_NAME) ?></span></a>
                 <ul class="sidebar-nav">
                     <?php foreach ($navigation as $group => $items):
                         $visible = array_filter($items, static fn(array $item): bool => can($item[2]));
@@ -122,12 +117,14 @@ $currentUserEmail = $currentUser['email'] ?? '';
         </div>
     </div>
     <?php require dirname(__DIR__).'/partials/toasts.php'; ?>
+    <?php require dirname(__DIR__).'/partials/confirm-modal.php'; ?>
     <script src="<?= asset('app.js') ?>"></script>
     <script src="<?= asset('icon-picker.js') ?>"></script>
     <script src="<?= asset('select-picker.js') ?>"></script>
     <script src="<?= asset('permissions.js') ?>"></script>
     <script src="<?= asset('password-toggle.js') ?>"></script>
     <script src="<?= asset('file-input.js') ?>"></script>
+    <script src="<?= asset('confirm-modal.js') ?>"></script>
     <script src="<?= asset('toasts.js') ?>"></script>
     <script>document.addEventListener('DOMContentLoaded', () => { if (window.feather) feather.replace(); });</script>
     <?php if (!empty($scripts)): ?>    <?= $scripts ?><?php endif; ?>

@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 $heading = $editing ? 'Edit Role' : 'Add Role';
 $subtitle = 'Choose which pages and actions this role can access.';
 $actionUrl = null;
+$backUrl = 'roles';
+$backLabel = 'Back to Roles';
 $system = !empty($record['is_system']);
 $moduleLabels = ['dashboard'=>'Dashboard','expenses'=>'Expenses','categories'=>'Categories','accounts'=>'Accounts','budgets'=>'Budgets','reports'=>'Reports','users'=>'Users','roles'=>'Roles','permissions'=>'Permission Administration','settings'=>'Settings','audit'=>'Audit Logs','finance'=>'Finance Visibility'];
 ?>
 <div class="role-form">
-<a class="action-button action-button--neutral btn btn-outline-secondary mb-3" href="<?=e(url('roles'))?>"><i data-feather="arrow-left" aria-hidden="true"></i>Back to Roles</a>
 <?php require dirname(__DIR__).'/partials/page-header.php'; ?>
-<form method="post" action="<?=e(url($editing ? 'roles/'.$record['id'].'/update' : 'roles'))?>" data-permissions-form>
+<form method="post" action="<?=e(url($editing ? 'roles/'.$record['id'].'/update' : 'roles'))?>" data-permissions-form <?php if ($editing): ?>data-confirm-status-field="status" data-confirm-status-value="inactive" data-confirm-title="Deactivate Role" data-confirm-subtitle="Users assigned to this role will lose access." data-confirm-message="Deactivating this role blocks assigned users on their next request until they are moved to an active role or this role is reactivated. Existing records and audit history stay saved." data-confirm-button="Deactivate Role"<?php endif; ?>>
 <?=csrf_field()?>
-<?php if ($errors): ?><div class="alert alert-danger" role="alert">Please correct the highlighted fields.<?php if (!empty($errors['permissions'])): ?><div><?=e($errors['permissions'])?></div><?php endif; ?></div><?php endif; ?>
 <div class="card"><div class="card-body">
 <?php if ($system): ?><p class="alert alert-info">This is a system role. Its name and active status are protected.</p><?php endif; ?>
 <div class="row">
@@ -37,9 +37,9 @@ require dirname(__DIR__).'/partials/form-fields.php';
 $action = substr($permission['name'], strpos($permission['name'], '.') + 1);
 $label = ucwords(str_replace(['.','_'], ' ', $action));
 ?>
-<div class="form-check mb-3">
+<div class="form-check permission-check mb-3">
 <input class="form-check-input" type="checkbox" name="permissions[]" id="permission-<?=e($permission['id'])?>" value="<?=e($permission['id'])?>" <?=checked(in_array((int)$permission['id'], $selectedPermissions, true))?> <?=$permission['grantable'] ? '' : 'disabled'?>>
-<label class="form-check-label" for="permission-<?=e($permission['id'])?>"><?=e($label)?><small class="d-block text-muted"><?=e($permission['name'])?><?=$permission['grantable'] ? '' : ' · Not assignable by you'?></small></label>
+<label class="form-check-label permission-check-label" for="permission-<?=e($permission['id'])?>"><span class="permission-check-title"><?=e($label)?> <span class="permission-check-code">[<?=e($permission['name'])?>]</span></span><small class="permission-check-description"><?=e($permission['description'] ?? '')?><?=$permission['grantable'] ? '' : ' · Not assignable by you'?></small></label>
 </div>
 <?php endforeach; ?>
 </div></fieldset></div>
@@ -50,3 +50,4 @@ $label = ucwords(str_replace(['.','_'], ' ', $action));
 </div></div></div>
 </form>
 </div>
+
