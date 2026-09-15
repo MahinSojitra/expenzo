@@ -1,29 +1,32 @@
-<div class="auth-brand">
-    <div class="auth-brand-mark"><i data-feather="trending-up" aria-hidden="true"></i></div>
-    <div class="auth-brand-name"><?= e(APP_NAME) ?></div>
-    <p class="auth-brand-tagline">Spend smart. Live better.</p>
-    <!-- <p>Simple expense tracking for daily spending, budgets and reports.</p> -->
-</div>
-<div class="text-center auth-heading">
-    <h1 class="h2">Welcome back!</h1>
-    <p class="lead">Sign in to your <?= e(APP_NAME) ?> account</p>
-</div>
-<div class="card auth-card">
-    <div class="card-body">
-        <div class="m-sm-3">
+<section class="auth-panel" aria-labelledby="login-title">
+    <div class="card auth-card auth-panel-card">
+        <div class="card-body">
+            <header class="auth-panel-heading">
+                <h1 id="login-title">Sign in</h1>
+                <p>Your everyday finances, all in one place.</p>
+            </header>
             <form method="post" action="<?= url('login') ?>"><?= csrf_field() ?>
-                <div class="mb-3"><label class="form-label">Email</label><input class="form-control form-control-lg"
-                        type="email" name="email" required autofocus placeholder="Enter your email"></div>
-                <div class="mb-3"><label class="form-label">Password</label><input class="form-control form-control-lg"
-                        type="password" name="password" required placeholder="Enter your password" data-password-toggle>
+                <div class="mb-3">
+                    <label class="form-label" for="login-email">Email</label>
+                    <input id="login-email" class="form-control form-control-lg" type="email" name="email"
+                        autocomplete="username" required autofocus placeholder="Enter your email">
                 </div>
-                <div class="form-check"><input id="remember" type="checkbox" class="form-check-input" name="remember"
-                        value="1"><label for="remember" class="form-check-label text-small">Remember me</label></div>
-                <div class="d-grid gap-2 mt-3"><button
-                        class="action-button action-button--primary btn btn-lg btn-primary"><i data-feather="log-in"
-                            aria-hidden="true"></i>Sign in</button></div>
+                <div class="mb-3">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input id="login-password" class="form-control form-control-lg" type="password" name="password"
+                        autocomplete="current-password" required placeholder="Enter your password" data-password-toggle>
+                </div>
+                <div class="form-check">
+                    <input id="remember" type="checkbox" class="form-check-input" name="remember" value="1">
+                    <label for="remember" class="form-check-label text-small">Remember me</label>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="action-button action-button--primary btn btn-lg btn-primary">
+                        <i data-feather="log-in" aria-hidden="true"></i>Sign in
+                    </button>
+                </div>
             </form>
+            <div class="auth-panel-footer">No account yet? <a href="<?= url('register') ?>">Create one</a></div>
         </div>
     </div>
-</div>
-<div class="text-center mb-3 text-muted">No account yet? <a href="<?= url('register') ?>">Create one</a></div>
+</section>
