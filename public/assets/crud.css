@@ -2285,3 +2285,32 @@ body.app-shell { height: 100vh; height: 100dvh; overflow: hidden; }
     .auth-intro-description { display: none; }
     .auth-panel-heading h1 { font-size: 1.5rem; }
 }
+
+/* Letters retain their space while the headline types, preventing layout shifts. */
+.auth-intro h2 .auth-type-text,
+.auth-intro h2 .auth-type-char { color: inherit; }
+.auth-intro h2 .auth-type-char {
+    position: relative;
+    opacity: 0;
+    transition: opacity 140ms ease-out;
+}
+.auth-intro h2 .auth-type-char.is-visible { opacity: 1; }
+.auth-type-char.has-cursor::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: .12em;
+    height: .85em;
+    width: 2px;
+    background: #9dd7ff;
+    animation: auth-cursor-blink 700ms ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes auth-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .auth-intro h2 .auth-type-char { opacity: 1; transition: none; }
+    .auth-type-char.has-cursor::after { display: none; animation: none; }
+}

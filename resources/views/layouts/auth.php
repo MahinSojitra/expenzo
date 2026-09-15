@@ -19,7 +19,7 @@
             </div>
             <div class="auth-intro-content">
                 <p class="auth-eyebrow">A little clarity. Every day.</p>
-                <h2 id="auth-intro-title">Make sense of <br>your <span>money.</span></h2>
+                <h2 id="auth-intro-title" data-auth-typewriter>Make sense of <br>your <span>money.</span></h2>
                 <p class="auth-intro-description">From your morning coffee to your monthly budget, bring your everyday finances into one clear view.</p>
                 <ul class="auth-features">
                     <li>
@@ -44,5 +44,6 @@
     <script src="<?= asset('app.js') ?>"></script>
     <script src="<?= asset('password-toggle.js') ?>"></script>
     <script src="<?= asset('toasts.js') ?>"></script>
+    <script src="<?= asset('auth-typewriter.js') ?>"></script>
 </body>
 </html>
