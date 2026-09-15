@@ -72,8 +72,27 @@ try {
     } catch (PDOException $e) {
         check(($e->errorInfo[1] ?? 0) === 1062, 'Duplicate must retain existing uniqueness validation.');
     }
-    $repo->update($ownId, $base + ['owner_id' => 'global'], $admin);
-    check((int) $repo->find($ownId)['owner_id'] === $ids[0], 'Editing must not transfer ownership.');
+    $admin['permissions'][] = 'categories.edit';
+    $admin['permissions'][] = 'categories.manage_all';
+    $personal['permissions'][] = 'categories.edit';
+    denied(fn() => $repo->update($ownId, $base + ['owner_id' => 'global'], $personal));
+    $changed = array_replace($base, ['name' => 'Transferred ' . $suffix, 'owner_id' => 'global']);
+    $repo->update($ownId, $changed, $admin);
+    check($repo->find($ownId)['owner_id'] === null, 'Admin can make a category global.');
+    $changed['owner_id'] = (string) $ids[1];
+    $repo->update($ownId, $changed, $admin);
+    check((int) $repo->find($ownId)['owner_id'] === $ids[1], 'Admin can assign an unused category to another user.');
+    check((int) $repo->find($ownId)['created_by'] === $ids[0], 'Transfer preserves the original creator.');
+    denied(fn() => $repo->update($ownId, $changed, $personal));
+    $pdo->prepare('INSERT INTO budgets(user_id,category_id,start_date,end_date,budget_amount,warning_threshold,status) VALUES(?,?,CURDATE(),CURDATE(),100,80,"active")')->execute([$ids[1], $ownId]);
+    $changed['owner_id'] = (string) $ids[0];
+    denied(fn() => $repo->update($ownId, $changed, $admin));
+    check((int) $repo->find($ownId)['owner_id'] === $ids[1], 'Blocked transfer preserves ownership.');
+    $changed['owner_id'] = 'global';
+    $repo->update($ownId, $changed, $admin);
+    check($repo->find($ownId)['owner_id'] === null, 'Global sharing preserves existing budget access.');
+    $changed['owner_id'] = [];
+    denied(fn() => $repo->update($ownId, $changed, $admin));
     echo $checks . " category ownership checks passed.\n";
 } finally {
     $pdo->rollBack();

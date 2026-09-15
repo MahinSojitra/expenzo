@@ -70,10 +70,10 @@ final class CategoryRepository
         return $options;
     }
 
-    private function creationOwner(array $data, array $actor): ?int
+    private function creationOwner(array $data, array $actor, bool $editing = false): ?int
     {
-        if (!Authorization::allows($actor, 'categories.create')) {
-            throw new FieldValidationException('owner_id', 'You do not have permission to create categories.');
+        if (!Authorization::allows($actor, $editing ? 'categories.edit' : 'categories.create')) {
+            throw new FieldValidationException('owner_id', 'You do not have permission to save categories.');
         }
         $value = $data['owner_id'] ?? (string)$actor['id'];
         if (!is_string($value) && !is_int($value)) {
@@ -105,13 +105,42 @@ final class CategoryRepository
 
     public function update(int $id, array $d, array $actor): void
     {
-        $record = $this->find($id);
-        if (!$record || !Authorization::categoryManageable($actor, $record)) throw new \RuntimeException('Category is outside your allowed scope.');
-        // Ownership and scope are immutable; submitted owner/scope fields are never used.
-        $s = Database::connection()->prepare('UPDATE categories SET name=?,description=?,icon=?,color=?,status=?,updated_at=NOW() WHERE id=?');
-        $s->execute([trim($d['name']), $d['description'] ?? null, $d['icon'], $d['color'], $d['status'], $id]);
+        $pdo = Database::connection();
+        $ownsTransaction = !$pdo->inTransaction();
+        if ($ownsTransaction) $pdo->beginTransaction();
+        try {
+            $lock = $pdo->prepare('SELECT * FROM categories WHERE id=? FOR UPDATE');
+            $lock->execute([$id]);
+            $record = $lock->fetch();
+            if (!$record || !Authorization::allows($actor, 'categories.edit') || !Authorization::categoryManageable($actor, $record)) {
+                throw new FieldValidationException('owner_id', 'You cannot edit this category.');
+            }
+            $current = $record['owner_id'] === null ? 'global' : (string)$record['owner_id'];
+            $submitted = $d['owner_id'] ?? $current;
+            $owner = $record['owner_id'];
+            if (!is_scalar($submitted) || (string)$submitted !== $current) {
+                if (!Authorization::allows($actor, 'categories.assign_owner')) {
+                    throw new FieldValidationException('owner_id', 'You do not have permission to change category ownership.');
+                }
+                $owner = $this->creationOwner($d, $actor, true);
+                if ($owner !== null) {
+                    foreach (['expenses', 'budgets'] as $table) {
+                        $usage = $pdo->prepare('SELECT id FROM '.$table.' WHERE category_id=? AND user_id<>? LIMIT 1 FOR UPDATE');
+                        $usage->execute([$id, $owner]);
+                        if ($usage->fetchColumn()) {
+                            throw new FieldValidationException('owner_id', 'Other users have expenses or budgets using this category. Keep it available to them or choose Global.');
+                        }
+                    }
+                }
+            }
+            $s = $pdo->prepare('UPDATE categories SET name=?,description=?,icon=?,color=?,status=?,owner_id=?,updated_at=NOW() WHERE id=?');
+            $s->execute([trim($d['name']), $d['description'] ?? null, $d['icon'], $d['color'], $d['status'], $owner, $id]);
+            if ($ownsTransaction) $pdo->commit();
+        } catch (\Throwable $e) {
+            if ($ownsTransaction && $pdo->inTransaction()) $pdo->rollBack();
+            throw $e;
+        }
     }
-
     public function delete(int $id, array $actor): void
     {
         $record = $this->find($id);

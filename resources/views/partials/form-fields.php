@@ -1,6 +1,7 @@
 <?php foreach ($fields as $name => $field):
     $type = $field['type'] ?? 'text';
     $value = $type === 'password' ? '' : old($name, $record[$name] ?? $field['default'] ?? '');
+    if (!empty($field['disabled'])) $value = $record[$name] ?? $field['default'] ?? '';
     $error = $errors[$name] ?? null;
 ?>
 <div class="<?=!empty($field['wide']) ? 'col-12' : 'col-md-6'?> mb-3">
@@ -10,7 +11,7 @@
         <option value="<?=e($value)?>" selected><?=e($value)?></option>
     </select>
     <?php elseif ($type === 'select'): ?>
-    <select id="<?=e($name)?>" name="<?=e($name)?>" class="form-select <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?> <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
+    <select id="<?=e($name)?>" name="<?=e($name)?>" <?=!empty($field['disabled']) ? 'disabled' : ''?> class="form-select <?=$error ? 'is-invalid' : ''?>" <?=!empty($field['required']) ? 'required' : ''?> <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>>
         <?php foreach ($field['options'] as $optionValue => $option):
             $label = is_array($option) ? ($option['label'] ?? $optionValue) : $option;
             $icon = is_array($option) ? ($option['icon'] ?? null) : null;

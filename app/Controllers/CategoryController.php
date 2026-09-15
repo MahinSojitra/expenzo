@@ -50,7 +50,7 @@ final class CategoryController
     private function form(array $record = [], array $errors = []): void
     {
         if ($errors) http_response_code(422);
-        $ownerOptions = isset($record['id']) ? [] : (new CategoryRepository())->ownerOptions(auth_user());
+        $ownerOptions = (new CategoryRepository())->ownerOptions(auth_user());
         View::render('categories/'.(isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors', 'ownerOptions'));
     }
 

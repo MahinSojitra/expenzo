@@ -12,7 +12,7 @@ INSERT INTO permissions(name,description) VALUES
 ('expenses.delete','Delete expense records.'),
 ('categories.view','View available expense categories.'),
 ('categories.create','Create categories within the permitted ownership scope.'),
-('categories.assign_owner','Create personal categories for any user. Requires categories.create.'),
+('categories.assign_owner','Assign category owners on create or edit. Requires categories.create or categories.edit.'),
 ('categories.edit','Edit categories the user is allowed to manage.'),
 ('categories.delete','Delete categories the user is allowed to manage.'),
 ('categories.customize','Change category display icon, color and personal appearance.'),

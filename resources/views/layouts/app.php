@@ -26,6 +26,13 @@ $currentUserEmail = $currentUser['email'] ?? '';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            let compact = window.matchMedia('(max-width: 767.98px)').matches;
+            try { compact = compact || localStorage.getItem('expenzo.sidebar.compact') === '1'; } catch (_) {}
+            document.documentElement.classList.toggle('sidebar-compact', compact);
+        })();
+    </script>
     <title><?= e($title ?? APP_NAME) ?></title>
     <link href="<?= asset('app.css') ?>" rel="stylesheet">
     <link href="<?= asset('crud.css') ?>" rel="stylesheet">
@@ -47,11 +54,11 @@ $currentUserEmail = $currentUser['email'] ?? '';
     </style>
 </head>
 
-<body>
+<body class="app-shell">
     <div class="wrapper">
         <nav id="sidebar" class="sidebar js-sidebar" aria-label="Main navigation">
             <div class="sidebar-content js-simplebar">
-                <a class="sidebar-brand app-sidebar-brand" href="<?= e(url(landing_path())) ?>"><span class="sidebar-brand-mark"><i data-feather="trending-up" aria-hidden="true"></i></span><span class="align-middle brand-mini"><?= e(APP_NAME) ?></span></a>
+                <a aria-label="<?= e(APP_NAME) ?> home" class="sidebar-brand app-sidebar-brand" href="<?= e(url(landing_path())) ?>"><span class="sidebar-brand-mark"><i data-feather="trending-up" aria-hidden="true"></i></span><span class="align-middle brand-mini"><span><?= e(APP_NAME) ?></span><span class="sidebar-brand-tagline">Spend smart. Live better.</span></span></a>
                 <ul class="sidebar-nav">
                     <?php foreach ($navigation as $group => $items):
                         $visible = array_filter($items, static fn(array $item): bool => can($item[2]));
@@ -62,7 +69,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
                         <?php foreach ($visible as $section => [$label, $icon, $permission]):
                             $active = $sidebarPath === '/' . $section || str_starts_with($sidebarPath, '/' . $section . '/') || ($section === 'dashboard' && $sidebarPath === '/');
                             ?>
-                            <li class="sidebar-item <?= $active ? 'active' : '' ?>"><a class="sidebar-link"
+                            <li class="sidebar-item <?= $active ? 'active' : '' ?>"><a class="sidebar-link" aria-label="<?= e($label) ?>"
                                     href="<?= e(url($section)) ?>" <?= $active ? 'aria-current="page"' : '' ?>><i aria-hidden="true" class="align-middle" data-feather="<?= e($icon) ?>"></i><span
                                         class="align-middle"><?= e($label) ?></span></a></li>
                         <?php endforeach; endforeach; ?>
@@ -71,7 +78,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
         </nav>
         <div class="main">
             <nav class="navbar navbar-expand navbar-light navbar-bg">
-                <a class="sidebar-toggle js-sidebar-toggle" role="button" tabindex="0" aria-label="Toggle navigation"><i
+                <a class="sidebar-toggle app-sidebar-toggle" role="button" tabindex="0" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="true"><i
                         class="hamburger align-self-center"></i></a>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav navbar-align">
@@ -119,6 +126,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
     <?php require dirname(__DIR__).'/partials/toasts.php'; ?>
     <?php require dirname(__DIR__).'/partials/confirm-modal.php'; ?>
     <script src="<?= asset('app.js') ?>"></script>
+    <script src="<?= asset('sidebar.js') ?>"></script>
     <script src="<?= asset('icon-picker.js') ?>"></script>
     <script src="<?= asset('select-picker.js') ?>"></script>
     <script src="<?= asset('expense-balance.js') ?>"></script>
