@@ -1,6 +1,7 @@
-﻿<div class="auth-brand">
+<div class="auth-brand">
     <div class="auth-brand-mark"><i data-feather="trending-up" aria-hidden="true"></i></div>
     <div class="auth-brand-name"><?= e(APP_NAME) ?></div>
+    <p class="auth-brand-tagline">Spend smart. Live better.</p>
     <!-- <p>Start managing expenses, accounts, budgets and reports in one place.</p> -->
 </div>
 <div class="text-center auth-heading">

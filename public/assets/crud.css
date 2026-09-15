@@ -1,7 +1,7 @@
 html,
 body {
     min-height: 100%;
-    overflow-y: auto !important;
+
 }
 
 * {
@@ -2129,3 +2129,67 @@ body.error-page {
         transition: none;
     }
 }
+/* Desktop icon rail and a fully hidden mobile drawer. */
+#sidebar { min-width: 260px; max-width: 260px; margin-left: 0; }
+#sidebar .sidebar-content { width: 100%; }
+html.sidebar-compact #sidebar { min-width: 72px; max-width: 72px; }
+html.sidebar-compact #sidebar .app-sidebar-brand { justify-content: center; padding: 0; gap: 0; }
+html.sidebar-compact #sidebar .brand-mini,
+html.sidebar-compact #sidebar .sidebar-link > span { max-width: 0; opacity: 0; overflow: hidden; }
+html.sidebar-compact #sidebar .sidebar-nav { padding: 18px 10px; }
+html.sidebar-compact #sidebar .sidebar-link { justify-content: center; padding: 11px 0; gap: 0; }
+html.sidebar-compact #sidebar .sidebar-header { font-size: 0; margin: 16px 8px 10px; padding: 0; height: 1px; gap: 0; }
+html.sidebar-compact #sidebar .sidebar-header:first-child { display: none; }
+.sidebar-backdrop { display: none; }
+@media (max-width: 767.98px) {
+    #sidebar { position: fixed; top: 0; bottom: 0; left: 0; z-index: 1040; width: 260px; }
+    html.sidebar-compact #sidebar { width: 0; min-width: 0; max-width: 0; pointer-events: none; }
+    .wrapper > .main { margin-left: 0; width: 100%; min-width: 0; }
+    .sidebar-backdrop.is-visible { display: block; position: fixed; inset: 0; z-index: 1035; background: rgba(15, 23, 42, .45); border: 0; }
+}
+#sidebar { overflow: hidden; }
+#sidebar .brand-mini, #sidebar .sidebar-link > span { max-width: 210px; white-space: nowrap; }
+html.sidebar-animated #sidebar {
+    transition: min-width .25s ease, max-width .25s ease, width .25s ease;
+}
+html.sidebar-animated #sidebar .brand-mini,
+html.sidebar-animated #sidebar .sidebar-link > span {
+    transition: opacity .18s ease, max-width .25s ease;
+}
+html.sidebar-animated #sidebar .sidebar-nav,
+html.sidebar-animated #sidebar .app-sidebar-brand,
+html.sidebar-animated #sidebar .sidebar-link {
+    transition: padding .25s ease, gap .25s ease, background-color .15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+    html.sidebar-animated #sidebar,
+    html.sidebar-animated #sidebar * { transition: none; }
+}
+/* Use one document scrollbar and size desktop charts to the viewport. */
+html { overflow-y: auto; }
+body { overflow: visible; }
+@media (min-width: 992px) {
+    .dashboard-chart { height: clamp(240px, 30vh, 320px); }
+    .dashboard-chart-empty { min-height: clamp(240px, 30vh, 320px); }
+    .dashboard-chart-sm { height: clamp(220px, 26vh, 260px); }
+    .dashboard-chart-empty-sm { min-height: clamp(220px, 26vh, 260px); }
+}
+/* Keep navigation outside the independently scrolling page content. */
+body.app-shell { height: 100vh; height: 100dvh; overflow: hidden; }
+.app-shell > .wrapper { height: 100%; min-height: 0; overflow: hidden; }
+.app-shell .wrapper > .main { height: 100%; min-height: 0; overflow: hidden; }
+.app-shell .main > .navbar { flex-shrink: 0; }
+.app-shell .main > .content {
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+}
+.app-shell .main > .footer { width: 100%; }
+.app-shell #sidebar .sidebar-content,
+.app-shell #sidebar .simplebar-content { height: 100vh; height: 100dvh; }
+#sidebar .brand-mini { display: flex; flex-direction: column; gap: 3px; line-height: 1.2; }
+#sidebar .sidebar-brand-tagline { color: #a9bad0; font-size: 11px; font-weight: 400; letter-spacing: .01em; }
+.auth-brand .auth-brand-tagline { font-size: 13px; line-height: 1.5; letter-spacing: .02em; }
