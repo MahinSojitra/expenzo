@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Core\Database;
 use App\Services\Authorization;
+use App\Services\FieldValidationException;
 
 final class CategoryRepository
 {
@@ -35,7 +36,7 @@ final class CategoryRepository
 
     public function find(int $id): ?array
     {
-        $s = Database::connection()->prepare('SELECT c.*,u.name owner_name FROM categories c LEFT JOIN users u ON u.id=c.owner_id WHERE c.id=?');
+        $s = Database::connection()->prepare('SELECT c.*,u.name owner_name,u.email owner_email FROM categories c LEFT JOIN users u ON u.id=c.owner_id WHERE c.id=?');
         $s->execute([$id]);
         return $s->fetch() ?: null;
     }
@@ -49,9 +50,54 @@ final class CategoryRepository
         return $s->fetch() ?: null;
     }
 
+    public function ownerOptions(array $actor): array
+    {
+        $options = [];
+        if (Authorization::allows($actor, 'categories.manage_global')) {
+            $options['global'] = ['label' => 'Global - available to everyone', 'icon' => 'globe'];
+        }
+        $options[(int)$actor['id']] = ['label' => 'Me - available only to me', 'icon' => 'user'];
+        if (Authorization::allows($actor, 'categories.assign_owner')) {
+            $users = Database::connection()->query('SELECT id,name,email,status FROM users ORDER BY name,id')->fetchAll();
+            foreach ($users as $user) {
+                if ((int)$user['id'] === (int)$actor['id']) continue;
+                $options[(int)$user['id']] = [
+                    'label' => $user['name'].' ('.$user['email'].')'.($user['status'] === 'inactive' ? ' - Inactive' : ''),
+                    'icon' => 'user',
+                ];
+            }
+        }
+        return $options;
+    }
+
+    private function creationOwner(array $data, array $actor): ?int
+    {
+        if (!Authorization::allows($actor, 'categories.create')) {
+            throw new FieldValidationException('owner_id', 'You do not have permission to create categories.');
+        }
+        $value = $data['owner_id'] ?? (string)$actor['id'];
+        if (!is_string($value) && !is_int($value)) {
+            throw new FieldValidationException('owner_id', 'Choose a valid category owner.');
+        }
+        if ($value === 'global') {
+            if (!Authorization::allows($actor, 'categories.manage_global')) {
+                throw new FieldValidationException('owner_id', 'You do not have permission to create global categories.');
+            }
+            return null;
+        }
+        $owner = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($owner === false) throw new FieldValidationException('owner_id', 'Choose a valid category owner.');
+        if ($owner !== (int)$actor['id'] && !Authorization::allows($actor, 'categories.assign_owner')) {
+            throw new FieldValidationException('owner_id', 'You do not have permission to create categories for other users.');
+        }
+        $statement = Database::connection()->prepare('SELECT id FROM users WHERE id=?');
+        $statement->execute([$owner]);
+        if (!$statement->fetchColumn()) throw new FieldValidationException('owner_id', 'This user no longer exists. Choose another owner.');
+        return $owner;
+    }
     public function create(array $d, array $actor): int
     {
-        $owner = Authorization::allows($actor, 'categories.manage_global') ? null : (int)$actor['id'];
+        $owner = $this->creationOwner($d, $actor);
         $s = Database::connection()->prepare('INSERT INTO categories(name,description,icon,color,status,owner_id,created_by) VALUES(?,?,?,?,?,?,?)');
         $s->execute([trim($d['name']), $d['description'] ?? null, $d['icon'], $d['color'], $d['status'], $owner, (int)$actor['id']]);
         return (int)Database::connection()->lastInsertId();

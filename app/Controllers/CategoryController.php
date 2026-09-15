@@ -9,6 +9,7 @@ use App\Middleware\PermissionMiddleware;
 use App\Repositories\CategoryRepository;
 use App\Services\Authorization;
 use App\Services\CrudValidation;
+use App\Services\FieldValidationException;
 
 final class CategoryController
 {
@@ -49,7 +50,8 @@ final class CategoryController
     private function form(array $record = [], array $errors = []): void
     {
         if ($errors) http_response_code(422);
-        View::render('categories/'.(isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors'));
+        $ownerOptions = isset($record['id']) ? [] : (new CategoryRepository())->ownerOptions(auth_user());
+        View::render('categories/'.(isset($record['id']) ? 'edit' : 'create'), compact('record', 'errors', 'ownerOptions'));
     }
 
     public function store(Request $r): void
@@ -61,6 +63,8 @@ final class CategoryController
             try {
                 (new CategoryRepository())->create($r->all(), auth_user());
                 $this->saved('categories', 'Category created successfully.');
+            } catch (FieldValidationException $e) {
+                $errors[$e->field] = $e->getMessage();
             } catch (\PDOException $e) {
                 $errors = $this->persistenceError($e, 'name');
             }
@@ -78,6 +82,8 @@ final class CategoryController
             try {
                 (new CategoryRepository())->update((int)$id, $r->all(), auth_user());
                 $this->saved('categories', 'Category updated successfully.');
+            } catch (FieldValidationException $e) {
+                $errors[$e->field] = $e->getMessage();
             } catch (\PDOException $e) {
                 $errors = $this->persistenceError($e, 'name');
             }

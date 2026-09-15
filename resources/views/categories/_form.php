@@ -1,9 +1,15 @@
 <?php
 $module = 'categories';
 $heading = $editing ? 'Edit Category' : 'Add Category';
-$global = $editing ? $record['owner_id'] === null : can('categories.manage_global');
-$subtitle = $global ? 'Global category, available to everyone.' : 'Personal category, available only to its owner.';
-$formNote = $editing && !empty($record['owner_name']) ? 'Owner: '.$record['owner_name'].'. Ownership and scope cannot be changed.' : ($global ? 'This category will be available to all users.' : 'This category belongs to you.');
+$global = $editing && $record['owner_id'] === null;
+$ownerLabel = '';
+if ($editing) {
+    $ownerLabel = $global ? 'Global - available to everyone'
+        : ((int)$record['owner_id'] === (int)auth_user()['id'] ? 'Me - available only to me'
+            : ($record['owner_name'] ?? 'User').(!empty($record['owner_email']) ? ' ('.$record['owner_email'].')' : ''));
+}
+$subtitle = $editing ? $ownerLabel : 'Choose who can use this category, then set its details and appearance.';
+$formNote = $editing ? 'Owner: '.$ownerLabel.'. Ownership and scope cannot be changed.' : 'Choose Global to make this category available to everyone, or select a user to make it available only to them.';
 $formAction = $editing ? $module.'/'.$record['id'].'/update' : $module;
 $submitLabel = $editing ? 'Update Category' : 'Save Category';
 $statusField = ['label' => 'Status', 'type' => 'select', 'options' => ['active' => 'Active', 'inactive' => 'Inactive'], 'default' => 'active', 'required' => true];
@@ -14,4 +20,15 @@ $fields = [
     'color' => ['label' => 'Default color', 'type' => 'color', 'default' => '#3b7ddd', 'required' => true],
     'status' => $statusField,
 ];
+if (!$editing) {
+    $fields = ['owner_id' => [
+        'label' => 'Category owner',
+        'type' => 'select',
+        'options' => $ownerOptions,
+        'default' => (string)auth_user()['id'],
+        'required' => true,
+        'wide' => true,
+        'help' => can('categories.assign_owner') ? 'Search by user name or email, or choose a shared global category if permitted.' : 'Choose from the ownership options available to your role.',
+    ]] + $fields;
+}
 require dirname(__DIR__).'/partials/crud-form.php';
