@@ -5,8 +5,13 @@ $subtitle = 'Enter your budget details below.';
 $formAction = $editing ? $module.'/'.$record['id'].'/update' : $module;
 $submitLabel = $editing ? 'Update Budget' : 'Create Budget';
 $statusField = ['label' => 'Status', 'type' => 'select', 'options' => ['active' => 'Active', 'inactive' => 'Inactive'], 'default' => 'active', 'required' => true];
-$categoryOptions = ['' => 'All Categories'];
-foreach ($categories as $category) $categoryOptions[$category['id']] = $category['name'] . ($category['status'] === 'inactive' ? ' (inactive)' : '');
+$categoryOptions = ['' => ['label' => 'All Categories', 'icon' => 'layers']];
+foreach ($categories as $category) {
+    $categoryOptions[$category['id']] = [
+        'label' => $category['name'] . ($category['status'] === 'inactive' ? ' (inactive)' : ''),
+        'icon' => $category['display_icon'] ?: ($category['icon'] ?? 'tag'),
+    ];
+}
 $fields = [
     'category_id' => ['label' => 'Category', 'type' => 'select', 'options' => $categoryOptions, 'wide' => true],
     'start_date' => ['label' => 'Start date', 'type' => 'date', 'required' => true, 'default' => date('Y-m-01')],
