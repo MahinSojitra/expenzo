@@ -17,17 +17,15 @@ Production-oriented debit/expense tracker built without Laravel or another PHP f
 6. Visit `/login`.
 
 ## Seed Credentials
-All seeded accounts use password `ChangeMe123!` for local development only.
+All seeded accounts use password `Expenzo@1603!` for local development only.
 
 - Super Admin: `admin@expenzo.com`
-- Admin: `ops.admin@expenzo.com`
 - User: `user@expenzo.com`
 
 Change seeded passwords before any production deployment.
 
 ## Role Model
 - Super Admin: all permissions.
-- Admin: operational administration, users, system categories, reports and read-only finance visibility; cannot assign or modify Super Admins.
 - User: own expenses, accounts, budgets, reports and category badge customization.
 
 ## Ownership Rules
