@@ -1,7 +1,7 @@
 <?php
 $sidebarPath = rtrim((new \App\Core\Request())->path(), '/') ?: '/';
 $navigation = [
-    'Overview' => ['dashboard' => ['Dashboard', 'sliders', 'dashboard.view']],
+    'Overview' => ['dashboard' => ['Dashboard', 'grid', 'dashboard.view']],
     'Finance' => [
         'expenses' => ['Expenses', 'credit-card', 'expenses.view'],
         'categories' => ['Categories', 'tag', 'categories.view'],
@@ -49,7 +49,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
 
 <body>
     <div class="wrapper">
-        <nav id="sidebar" class="sidebar js-sidebar">
+        <nav id="sidebar" class="sidebar js-sidebar" aria-label="Main navigation">
             <div class="sidebar-content js-simplebar">
                 <a class="sidebar-brand app-sidebar-brand" href="<?= e(url(landing_path())) ?>"><span class="sidebar-brand-mark"><i data-feather="trending-up" aria-hidden="true"></i></span><span class="align-middle brand-mini"><?= e(APP_NAME) ?></span></a>
                 <ul class="sidebar-nav">
@@ -63,7 +63,7 @@ $currentUserEmail = $currentUser['email'] ?? '';
                             $active = $sidebarPath === '/' . $section || str_starts_with($sidebarPath, '/' . $section . '/') || ($section === 'dashboard' && $sidebarPath === '/');
                             ?>
                             <li class="sidebar-item <?= $active ? 'active' : '' ?>"><a class="sidebar-link"
-                                    href="<?= e(url($section)) ?>"><i class="align-middle" data-feather="<?= e($icon) ?>"></i><span
+                                    href="<?= e(url($section)) ?>" <?= $active ? 'aria-current="page"' : '' ?>><i aria-hidden="true" class="align-middle" data-feather="<?= e($icon) ?>"></i><span
                                         class="align-middle"><?= e($label) ?></span></a></li>
                         <?php endforeach; endforeach; ?>
                 </ul>
