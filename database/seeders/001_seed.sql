@@ -22,6 +22,12 @@ INSERT INTO permissions(name,description) VALUES
 ('finance.view_all','View finance records and totals across all users.'),
 ('categories.badge.view','View category badges and icon metadata.'),
 ('categories.badge.edit','Edit category badges and icon metadata.'),
+('transactions.view','View transaction history within the permitted finance scope.'),
+('transactions.create','Post income and transfers between own accounts.'),
+('transactions.adjust','Post and reverse balance adjustments on own accounts.'),
+('transactions.reverse','Reverse own posted transactions with a reason.'),
+('transactions.create_all','Post transactions into any user account. Requires transactions.create or transactions.adjust.'),
+('transactions.reverse_all','Reverse other users transactions. Requires transactions.view, finance.view_all and transactions.reverse; adjustments also require transactions.adjust.'),
 ('accounts.view','View payment accounts.'),
 ('accounts.create','Create payment accounts.'),
 ('accounts.edit','Update payment account details and status.'),
@@ -67,6 +73,7 @@ SELECT r.id,p.id FROM roles r JOIN permissions p ON p.name IN (
 'dashboard.view','expenses.view','expenses.create','expenses.edit','expenses.delete',
 'categories.view','categories.create','categories.edit','categories.delete','categories.customize','categories.badge.view','categories.badge.edit',
 'accounts.view','accounts.create','accounts.edit','accounts.delete',
+'transactions.view','transactions.create','transactions.adjust','transactions.reverse',
 'budgets.view','budgets.create','budgets.edit','budgets.delete','reports.view','reports.analytics','reports.customize','reports.export','reports.export_csv','reports.export_visuals'
 ) WHERE r.name='User';
 
@@ -103,3 +110,8 @@ UNION ALL SELECT u.id,c.id,DATE_FORMAT(CURDATE(),'%Y-%m-01'),LAST_DAY(CURDATE())
 
 INSERT INTO settings(setting_key,setting_value,updated_at) VALUES
 ('app_name','Expenzo',NOW()),('currency','INR',NOW()),('date_format','Y-m-d',NOW()),('timezone','Asia/Kolkata',NOW()),('pagination_size','10',NOW());
+
+INSERT IGNORE INTO role_permissions(role_id,permission_id)
+SELECT r.id,p.id FROM roles r CROSS JOIN permissions p
+WHERE r.system_key IN ('admin','super_admin')
+AND p.name IN ('transactions.view','transactions.create','transactions.adjust','transactions.reverse','transactions.create_all','transactions.reverse_all','finance.view_all');

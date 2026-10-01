@@ -15,7 +15,7 @@
         <?php foreach ($field['options'] as $optionValue => $option):
             $label = is_array($option) ? ($option['label'] ?? $optionValue) : $option;
             $icon = is_array($option) ? ($option['icon'] ?? null) : null;
-        ?><option value="<?=e($optionValue)?>" <?=$icon ? 'data-icon="'.e($icon).'"' : ''?> <?=selected($value, $optionValue)?>><?=e($label)?></option><?php endforeach; ?>
+        ?><option value="<?=e($optionValue)?>" <?=$icon ? 'data-icon="'.e($icon).'"' : ''?> <?=is_array($option) && !empty($option['subtitle']) ? 'data-subtitle="'.e($option['subtitle']).'"' : ''?> <?=selected($value, $optionValue)?>><?=e($label)?></option><?php endforeach; ?>
     </select>
     <?php elseif ($type === 'textarea'): ?>
     <textarea id="<?=e($name)?>" name="<?=e($name)?>" class="form-control <?=$error ? 'is-invalid' : ''?>" rows="4" maxlength="16000" <?=$error ? 'aria-invalid="true" aria-describedby="'.e($name).'-error"' : ''?>><?=e($value)?></textarea>
