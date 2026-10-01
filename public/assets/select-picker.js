@@ -139,7 +139,17 @@
             renderIcon(icon, iconFor(select, option));
             const text = document.createElement('span');
             text.textContent = optionLabel(option);
-            container.append(icon, text);
+            if (option.dataset.subtitle) {
+                const copy = document.createElement('span');
+                copy.className = 'select-picker-copy';
+                const subtitle = document.createElement('small');
+                subtitle.className = 'select-picker-subtitle';
+                subtitle.textContent = option.dataset.subtitle;
+                copy.append(text, subtitle);
+                container.append(icon, copy);
+            } else {
+                container.append(icon, text);
+            }
         }
 
         function selectedOption() {
@@ -160,7 +170,7 @@
 
         function render() {
             const query = search.value.trim().toLowerCase();
-            results = options().filter(option => optionLabel(option).toLowerCase().includes(query));
+            results = options().filter(option => (optionLabel(option) + ' ' + (option.dataset.subtitle || '')).toLowerCase().includes(query));
             list.replaceChildren();
             results.forEach((option, index) => {
                 const item = document.createElement('div');

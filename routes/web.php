@@ -21,6 +21,12 @@ return static function (Router $r): void {
     $r->post('/expenses/{id}', 'App\Controllers\ExpenseController@update');
     $r->post('/expenses/{id}/delete', 'App\Controllers\ExpenseController@delete');
 
+    $r->get('/transactions', 'App\Controllers\TransactionController@index');
+    $r->get('/transactions/create', 'App\Controllers\TransactionController@create');
+    $r->post('/transactions', 'App\Controllers\TransactionController@store');
+    $r->get('/transactions/{id}', 'App\Controllers\TransactionController@show');
+    $r->post('/transactions/{id}/reverse', 'App\Controllers\TransactionController@reverse');
+
     foreach (['categories' => 'Category', 'accounts' => 'Account', 'budgets' => 'Budget', 'users' => 'User', 'roles' => 'Role'] as $module => $controller) {
         $handler = 'App\\Controllers\\' . $controller . 'Controller@';
         $r->get('/' . $module, $handler . 'index');

@@ -6,6 +6,7 @@ $navigation = [
         'expenses' => ['Expenses', 'credit-card', 'expenses.view'],
         'categories' => ['Categories', 'tag', 'categories.view'],
         'accounts' => ['Accounts', 'briefcase', 'accounts.view'],
+        'transactions' => ['Transactions', 'repeat', 'transactions.view'],
         'budgets' => ['Budgets', 'pie-chart', 'budgets.view'],
         'reports' => ['Reports', 'bar-chart-2', 'reports.view'],
     ],

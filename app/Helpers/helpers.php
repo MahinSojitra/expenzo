@@ -79,7 +79,7 @@ function category_label(?string $name, ?string $icon = null, ?string $color = nu
 
 function is_super_admin():bool{return \App\Services\Authorization::superAdmin(auth_user() ?? []);}
 function landing_path():string {
-    foreach (['dashboard','expenses','categories','accounts','budgets','reports','users','roles','settings'] as $module) {
+    foreach (['dashboard','expenses','transactions','categories','accounts','budgets','reports','users','roles','settings'] as $module) {
         if(can($module.'.view')) return '/'.$module;
     }
     return '/dashboard';

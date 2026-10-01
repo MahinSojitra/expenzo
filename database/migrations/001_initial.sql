@@ -5,6 +5,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS audit_logs;
 DROP TABLE IF EXISTS settings;
 DROP TABLE IF EXISTS budgets;
+DROP TABLE IF EXISTS account_transactions;
 DROP TABLE IF EXISTS expenses;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS user_category_settings;
@@ -130,6 +131,29 @@ CREATE TABLE expenses (
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE RESTRICT,
   FOREIGN KEY(account_id) REFERENCES accounts(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE account_transactions (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  type ENUM('income','transfer','adjustment') NOT NULL,
+  account_id BIGINT UNSIGNED NOT NULL,
+  destination_account_id BIGINT UNSIGNED NULL,
+  amount DECIMAL(15,2) NOT NULL,
+  account_delta DECIMAL(15,2) NOT NULL,
+  transaction_date DATE NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  submission_token CHAR(64) NOT NULL,
+  reversed_at DATETIME NULL,
+  reversal_reason VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_transaction_submission(user_id,submission_token),
+  INDEX idx_transactions_user_date(user_id,transaction_date),
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE RESTRICT,
+  FOREIGN KEY(account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+  FOREIGN KEY(destination_account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+  CHECK (amount > 0),
+  CHECK ((type='transfer' AND destination_account_id IS NOT NULL AND destination_account_id<>account_id AND account_delta=-amount) OR (type='income' AND destination_account_id IS NULL AND account_delta=amount) OR (type='adjustment' AND destination_account_id IS NULL AND ABS(account_delta)=amount))
 ) ENGINE=InnoDB;
 
 CREATE TABLE budgets (

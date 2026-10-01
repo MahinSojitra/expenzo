@@ -21,5 +21,5 @@ $fields = [
 if (!$editing) $fields['opening_balance'] = ['label' => 'Opening balance', 'type' => 'number', 'min' => '0', 'max' => '9999999999999.99', 'step' => '0.01', 'help' => 'Enter zero or a positive balance. Negative opening balances are not allowed.', 'default' => '0', 'required' => true];
 $fields['status'] = $statusField;
 $fields['description'] = ['label' => 'Description', 'type' => 'textarea', 'wide' => true];
-$formNote = $editing ? 'Opening balance: ' . money($record['opening_balance']) . '. Opening and current balances are preserved when you edit account details.' : 'This account will belong to you.';
+$formNote = $editing ? 'Opening balance: ' . money($record['opening_balance']) . '. Use Add Transaction on Accounts to record income, transfers or balance adjustments. Editing account details preserves balances.' : 'This account will belong to you.';
 require dirname(__DIR__).'/partials/crud-form.php';

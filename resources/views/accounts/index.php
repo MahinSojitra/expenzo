@@ -18,7 +18,12 @@ require dirname(__DIR__).'/partials/page-header.php';
 <td><div class="fw-semibold"><?=e($r['name'])?></div><small class="text-muted table-description"><?=e($r['description'] ?? '')?></small></td>
 <td><?=account_type_label($r['type'] ?? '')?></td><td class="text-nowrap"><?=money($r['opening_balance'])?></td><td class="fw-semibold text-nowrap"><?=money($r['balance'])?></td>
 <td><span class="status-badge status-badge--<?=in_array($r['status'], ['active', 'posted'], true) ? 'success' : 'neutral'?>"><i data-feather="<?=in_array($r['status'], ['active', 'posted'], true) ? 'check-circle' : 'pause-circle'?>" aria-hidden="true"></i><?=e(ucfirst($r['status']))?></span></td>
-<td><?php $rowId = $r['id']; $rowName = $r['name']; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('accounts.edit'); $mayDelete = $owned && can('accounts.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
+<td>
+<div class="table-actions mb-2">
+<?php if (can('transactions.view')): ?><a class="action-button action-button--purple btn btn-sm btn-outline-secondary" href="<?=e(url('transactions?account_id='.$r['id']))?>"><i data-feather="clock" aria-hidden="true"></i>History</a><?php endif; ?>
+<?php if (((int)$r['user_id'] === (int)auth_user()['id'] || can('transactions.create_all')) && $r['status'] === 'active' && (can('transactions.create') || can('transactions.adjust'))): ?><a class="action-button action-button--success btn btn-sm btn-outline-success" href="<?=e(url('transactions/create?account_id='.$r['id'].'&type='.(can('transactions.create')?'income':'adjustment')))?>"><i data-feather="plus-circle" aria-hidden="true"></i>Add Transaction</a><?php endif; ?>
+</div>
+<?php $rowId = $r['id']; $rowName = $r['name']; $owned = (int)$r['user_id'] === (int)\App\Core\Session::get('user_id'); $mayEdit = $owned && can('accounts.edit'); $mayDelete = $owned && can('accounts.delete'); require dirname(__DIR__).'/partials/row-actions.php'; ?></td>
 </tr>
 <?php endforeach; ?>
 </tbody></table></div>
